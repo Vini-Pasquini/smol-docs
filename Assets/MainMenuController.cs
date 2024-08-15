@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class MainMenuController : MonoBehaviour
 {
+    [Header("Menu Screens")]
+    [SerializeField] private GameObject TitleScreenCanvas;
+    [SerializeField] private GameObject GameLobbyCanvas;
     [Header("Game Title Animation")]
     [SerializeField] private Transform gameTitleTransform;
     [SerializeField] private Transform gameTitleLowLimit;
@@ -36,5 +39,19 @@ public class MainMenuController : MonoBehaviour
         gameTitleTransform.rotation = Quaternion.Euler(new Vector3(0f, 0f, Mathf.Lerp(-gameTitleRotationLimit, gameTitleRotationLimit, gameTitleRotationAnimationTimer)));
         gameTitleRotationAnimationTimer += (Time.deltaTime / gameTitleRotationAnimationLength) * (gameTitleRotationAnimationInvertDirection ? -1 : 1);
         if (gameTitleRotationAnimationTimer <= 0f || gameTitleRotationAnimationTimer >= 1f) { gameTitleRotationAnimationInvertDirection = !gameTitleRotationAnimationInvertDirection; }
+    }
+
+    /* Menu Interaction Methods */
+    // TitleScreen
+    public void PlayButton()
+    {
+        TitleScreenCanvas.SetActive(false);
+        GameLobbyCanvas.SetActive(true);
+    }
+    // GameLobby
+    public void BackButton()
+    {
+        TitleScreenCanvas.SetActive(true);
+        GameLobbyCanvas.SetActive(false);
     }
 }
