@@ -34,11 +34,13 @@ public class MainMenuController : MonoBehaviour
         // position
         gameTitleTransform.position = new Vector3(gameTitleTransform.position.x, Mathf.Lerp(gameTitleMinPosition.y, gameTitleMaxPosition.y, gameTitlePositionAnimationTimer), 0f);
         gameTitlePositionAnimationTimer += (Time.deltaTime / gameTitlePositionAnimationLength) * (gameTitlePositionAnimationInvertDirection ? -1 : 1);
-        if (gameTitlePositionAnimationTimer <= 0f || gameTitlePositionAnimationTimer >= 1f) { gameTitlePositionAnimationInvertDirection = !gameTitlePositionAnimationInvertDirection; }
+        if (gameTitlePositionAnimationTimer < 0f) { gameTitlePositionAnimationTimer = 0f; gameTitlePositionAnimationInvertDirection = false; }
+        if (gameTitlePositionAnimationTimer > 1f) { gameTitlePositionAnimationTimer = 1f; gameTitlePositionAnimationInvertDirection = true; }
         // rotation
         gameTitleTransform.rotation = Quaternion.Euler(new Vector3(0f, 0f, Mathf.Lerp(-gameTitleRotationLimit, gameTitleRotationLimit, gameTitleRotationAnimationTimer)));
         gameTitleRotationAnimationTimer += (Time.deltaTime / gameTitleRotationAnimationLength) * (gameTitleRotationAnimationInvertDirection ? -1 : 1);
-        if (gameTitleRotationAnimationTimer <= 0f || gameTitleRotationAnimationTimer >= 1f) { gameTitleRotationAnimationInvertDirection = !gameTitleRotationAnimationInvertDirection; }
+        if (gameTitleRotationAnimationTimer < 0f) { gameTitleRotationAnimationTimer = 0f; gameTitleRotationAnimationInvertDirection = false; }
+        if (gameTitleRotationAnimationTimer > 1f) { gameTitleRotationAnimationTimer = 1f; gameTitleRotationAnimationInvertDirection = true; }
     }
 
     /* Menu Interaction Methods */
