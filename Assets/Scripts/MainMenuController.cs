@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -50,10 +51,21 @@ public class MainMenuController : MonoBehaviour
         TitleScreenCanvas.SetActive(false);
         GameLobbyCanvas.SetActive(true);
     }
-    // GameLobby
+
+    // Lobby
     public void BackButton()
     {
         TitleScreenCanvas.SetActive(true);
         GameLobbyCanvas.SetActive(false);
+    }
+
+    public void CreateRoom()
+    {
+        SceneManager.LoadScene("Game");
+    }
+
+    public void JoinRoom()
+    {
+
     }
 }
