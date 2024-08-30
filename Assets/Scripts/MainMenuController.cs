@@ -1,3 +1,5 @@
+using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
+    public static MainMenuController Instance { get; private set; }
+
     [Header("Menu Screens")]
     [SerializeField] private GameObject TitleScreenCanvas;
     [SerializeField] private GameObject GameLobbyCanvas;
@@ -23,6 +27,11 @@ public class MainMenuController : MonoBehaviour
     private bool gameTitleRotationAnimationInvertDirection = false;
     private float gameTitleRotationAnimationTimer = .5f;
     private float gameTitleRotationAnimationLength = 4.5f;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -44,27 +53,62 @@ public class MainMenuController : MonoBehaviour
         if (gameTitleRotationAnimationTimer > 1f) { gameTitleRotationAnimationTimer = 1f; gameTitleRotationAnimationInvertDirection = true; }
     }
 
-    /* Menu Interaction Methods */
-    // TitleScreen
-    public void PlayButton()
+    /* * * * * * * * * * * * * * */
+    /*  Menu Interaction Methods */
+    /* * * * * * * * * * * * * * */
+    
+    /* TitleScreen */
+    // PlayButton
+    public void OnPlayButtonPressed()
+    {
+        Debug.Log("[PhotonManager] Connecting to Server...");
+        PhotonNetwork.ConnectUsingSettings();
+    }
+
+    public void PlayButtonCallback()
     {
         TitleScreenCanvas.SetActive(false);
         GameLobbyCanvas.SetActive(true);
     }
 
-    // Lobby
-    public void BackButton()
+    /* Lobby */
+    // Back
+    public void OnBackButtonPressed()
+    {
+        Debug.Log("[PhotonManager] Disconnecting from Lobby...");
+        PhotonNetwork.LeaveLobby();
+    }
+
+    public void BackButtonCallback()
     {
         TitleScreenCanvas.SetActive(true);
         GameLobbyCanvas.SetActive(false);
     }
 
-    public void CreateRoom()
+    // Create Room
+    public void OnCreateRoomButtonPressed()
     {
-        SceneManager.LoadScene("Game");
+        PhotonNetwork.CreateRoom(PhotonNetwork.NickName);
     }
 
-    public void JoinRoom()
+    public void CreateRoomButtonCallback()
+    {
+        // SceneManager.LoadScene("Game");
+    }
+
+    // Join Room
+    public void OnJoinRoomButtonPressed()
+    {
+        PhotonNetwork.JoinRoom(PhotonNetwork.NickName);
+    }
+
+    public void JoinRoomButtonCallback()
+    {
+        // SceneManager.LoadScene("Game");
+    }
+
+    // Room List
+    public void RoomListUpdate(List<RoomInfo> roomList)
     {
 
     }
