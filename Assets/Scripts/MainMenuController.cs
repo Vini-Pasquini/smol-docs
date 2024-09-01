@@ -2,8 +2,10 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -16,6 +18,10 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private Transform gameTitleTransform;
     [SerializeField] private Transform gameTitleLowLimit;
     [SerializeField] private Transform gameTitleHighLimit;
+    [Header("Game Title Animation")]
+    [SerializeField] private GameObject roomPrefab;
+    [SerializeField] private Transform roomContent;
+    List<GameObject> roomObjectList = new List<GameObject>();
     // position
     private Vector3 gameTitleMinPosition;
     private Vector3 gameTitleMaxPosition;
@@ -61,7 +67,7 @@ public class MainMenuController : MonoBehaviour
     // PlayButton
     public void OnPlayButtonPressed()
     {
-        Debug.Log("[PhotonManager] Connecting to Server...");
+        Debug.Log("[MainMenuController] Connecting to Server...");
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -75,7 +81,7 @@ public class MainMenuController : MonoBehaviour
     // Back
     public void OnBackButtonPressed()
     {
-        Debug.Log("[PhotonManager] Disconnecting from Lobby...");
+        Debug.Log("[MainMenuController] Disconnecting from Lobby...");
         PhotonNetwork.LeaveLobby();
     }
 
@@ -88,28 +94,37 @@ public class MainMenuController : MonoBehaviour
     // Create Room
     public void OnCreateRoomButtonPressed()
     {
+        Debug.Log($"[MainMenuController] Creating \"{PhotonNetwork.NickName}\" Room...");
         PhotonNetwork.CreateRoom(PhotonNetwork.NickName);
     }
 
     public void CreateRoomButtonCallback()
     {
-        // SceneManager.LoadScene("Game");
+        // nao tem
     }
 
     // Join Room
-    public void OnJoinRoomButtonPressed()
+    public void OnJoinRoomButtonPressed(TextMeshProUGUI roomName)
     {
-        PhotonNetwork.JoinRoom(PhotonNetwork.NickName);
+        PhotonNetwork.JoinRoom(roomName.text);
     }
 
     public void JoinRoomButtonCallback()
     {
-        // SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("Game");
     }
 
     // Room List
     public void RoomListUpdate(List<RoomInfo> roomList)
     {
-
+        foreach (GameObject roomObject in roomObjectList) { Destroy(roomObject); }
+        roomObjectList.Clear();
+        foreach (RoomInfo currentRoom in roomList)
+        {
+            GameObject newRoomObject = GameObject.Instantiate(this.roomPrefab, this.roomContent);
+            newRoomObject.GetComponentInChildren<TextMeshProUGUI>().text = currentRoom.Name;
+            roomObjectList.Add(newRoomObject);
+            this.roomContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0f, (160f * this.roomContent.childCount) + 10f);
+        }
     }
 }

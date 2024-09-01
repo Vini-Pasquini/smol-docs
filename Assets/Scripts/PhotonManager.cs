@@ -43,6 +43,18 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         PhotonNetwork.Disconnect();
     }
 
+    public override void OnCreatedRoom()
+    {
+        Debug.Log("[PhotonManager] Successfully Created Room");
+        MainMenuController.Instance.CreateRoomButtonCallback();
+    }
+
+    public override void OnJoinedRoom()
+    {
+        Debug.Log("[PhotonManager] Successfully Joined Room");
+        MainMenuController.Instance.JoinRoomButtonCallback();
+    }
+
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         MainMenuController.Instance.RoomListUpdate(roomList);
