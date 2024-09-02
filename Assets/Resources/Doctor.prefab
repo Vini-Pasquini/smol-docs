@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2049831813619738526}
   - component: {fileID: 8231805069089599277}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Doctor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -114,7 +114,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!65 &7728919226390180352
 BoxCollider:
@@ -165,7 +165,7 @@ MonoBehaviour:
   Group: 0
   prefixField: -1
   Synchronization: 3
-  OwnershipTransfer: 1
+  OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
   - {fileID: 8231805069089599277}

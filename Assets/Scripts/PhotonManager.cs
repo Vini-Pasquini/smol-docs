@@ -60,13 +60,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("[PhotonManager] Successfully Joined Room");
-        SceneManager.LoadScene("Game");
+        PhotonNetwork.LoadLevel("Game");
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Debug.Log($"[PhotonManager] Player {newPlayer.NickName} Joined Room");
-        GameObject.Instantiate(playerPrefab);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
