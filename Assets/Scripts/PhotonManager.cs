@@ -3,11 +3,19 @@ using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
+    public static PhotonManager Instance { get; private set; }
+
+    [SerializeField] private GameObject playerPrefab;
+
+    public GameObject PlayerPrefab { get { return this.playerPrefab; } }
+
     private void Awake()
     {
+        Instance = this;
         GameObject.DontDestroyOnLoad(this);
     }
 
@@ -52,7 +60,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("[PhotonManager] Successfully Joined Room");
-        MainMenuController.Instance.JoinRoomButtonCallback();
+        SceneManager.LoadScene("Game");
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        Debug.Log($"[PhotonManager] Player {newPlayer.NickName} Joined Room");
+        GameObject.Instantiate(playerPrefab);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)

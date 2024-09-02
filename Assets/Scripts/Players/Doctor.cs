@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Doctor : MonoBehaviour
 {
     protected float movementSpeed = 0f;
     protected Vector3 newPosition = Vector3.zero;

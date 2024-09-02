@@ -4,12 +4,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private GameObject PlayerA;
-    [SerializeField] private GameObject PlayerB;
-
     private void Start()
     {
-        GameObject.Instantiate(PlayerA, Vector3.left, Quaternion.identity);
-        GameObject.Instantiate(PlayerB, Vector3.right, Quaternion.identity);
+        GameObject.Instantiate(PhotonManager.Instance.PlayerPrefab, Vector3.left, Quaternion.identity);
     }
 }

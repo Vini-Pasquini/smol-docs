@@ -111,7 +111,7 @@ public class MainMenuController : MonoBehaviour
 
     public void JoinRoomButtonCallback()
     {
-        SceneManager.LoadScene("Game");
+        // nao tem tbm
     }
 
     // Room List
