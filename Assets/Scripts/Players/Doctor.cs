@@ -6,24 +6,26 @@ using UnityEngine;
 public class Doctor : MonoBehaviour
 {
     private PhotonView photonView;
+    private Rigidbody rigidbody;
 
     private float movementSpeed = 2f;
-    private Vector3 newPosition = Vector3.zero;
+    private Vector3 newVelocity = Vector3.zero;
 
     private void Start()
     {
         this.photonView = this.GetComponent<PhotonView>();
+        this.rigidbody = this.GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
         if (!this.photonView.IsMine) return;
 
-        newPosition = transform.position;
+        newVelocity = Vector3.zero;
 
-        newPosition += ((Time.deltaTime * movementSpeed) * (Input.GetKey(KeyCode.W) ? Vector3.up : (Input.GetKey(KeyCode.S) ? Vector3.down : Vector3.zero)));
-        newPosition += ((Time.deltaTime * movementSpeed) * (Input.GetKey(KeyCode.A) ? Vector3.left : (Input.GetKey(KeyCode.D) ? Vector3.right : Vector3.zero)));
+        newVelocity.x = movementSpeed * (Input.GetKey(KeyCode.A) ? -1 : (Input.GetKey(KeyCode.D) ? 1 : 0));
+        newVelocity.y = movementSpeed * (Input.GetKey(KeyCode.W) ? 1 : (Input.GetKey(KeyCode.S) ? -1 : 0));
 
-        transform.position = newPosition;
+        this.rigidbody.velocity = newVelocity;
     }
 }
