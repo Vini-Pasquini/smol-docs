@@ -9,10 +9,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 {
     public static PhotonManager Instance { get; private set; }
 
-    [SerializeField] private GameObject playerPrefab;
-
-    public GameObject PlayerPrefab { get { return this.playerPrefab; } }
-
     private void Awake()
     {
         Instance = this;
@@ -29,38 +25,44 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("[PhotonManager] Successfully Connected to Server");
         Debug.Log("[PhotonManager] Connecting to Lobby...");
+        MainMenuUIController.Instance.SetStatusMassege("Successfully Connected to Server - Connecting to Lobby...");
         PhotonNetwork.JoinLobby();
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
         Debug.Log("[PhotonManager] Successfully Disconnected from Server");
-        MainMenuController.Instance.BackButtonCallback();
+        MainMenuUIController.Instance.SetStatusMassege("Successfully Disconnected from Server");
+        MainMenuUIController.Instance.BackButtonCallback();
     }
 
     public override void OnJoinedLobby()
     {
         Debug.Log("[PhotonManager] Successfully Connected to Lobby");
-        MainMenuController.Instance.PlayButtonCallback();
+        MainMenuUIController.Instance.SetStatusMassege("Successfully Connected to Lobby");
+        MainMenuUIController.Instance.PlayButtonCallback();
     }
 
     public override void OnLeftLobby()
     {
         Debug.Log("[PhotonManager] Successfully Disconnected from Lobby");
         Debug.Log("[PhotonManager] Disconnecting from Server...");
+        MainMenuUIController.Instance.SetStatusMassege("Successfully Disconnected from Lobby - Disconnecting from Server...");
         PhotonNetwork.Disconnect();
     }
 
     public override void OnCreatedRoom()
     {
         Debug.Log("[PhotonManager] Successfully Created Room");
-        MainMenuController.Instance.CreateRoomButtonCallback();
+        MainMenuUIController.Instance.SetStatusMassege("Successfully Created Room");
+        MainMenuUIController.Instance.CreateRoomButtonCallback();
     }
 
     public override void OnJoinedRoom()
     {
         Debug.Log("[PhotonManager] Successfully Joined Room");
-        PhotonNetwork.LoadLevel("Game");
+        MainMenuUIController.Instance.SetStatusMassege("Successfully Joined Room");
+        PhotonNetwork.LoadLevel("RoomLobby");
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -70,6 +72,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        MainMenuController.Instance.RoomListUpdate(roomList);
+        MainMenuUIController.Instance.RoomListUpdate(roomList);
     }
 }

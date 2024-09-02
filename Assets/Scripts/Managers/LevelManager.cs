@@ -4,9 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class LevelManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+    public static LevelManager Instance { get; private set; }
 
     public int myViewID { get; private set; }
 

@@ -7,10 +7,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MainMenuController : MonoBehaviour
+public class MainMenuUIController : MonoBehaviour
 {
-    public static MainMenuController Instance { get; private set; }
+    public static MainMenuUIController Instance { get; private set; }
 
+    [SerializeField] private TextMeshProUGUI statusMessage;
     [Header("Menu Screens")]
     [SerializeField] private GameObject TitleScreenCanvas;
     [SerializeField] private GameObject GameLobbyCanvas;
@@ -18,7 +19,7 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private Transform gameTitleTransform;
     [SerializeField] private Transform gameTitleLowLimit;
     [SerializeField] private Transform gameTitleHighLimit;
-    [Header("Game Title Animation")]
+    [Header("Room List")]
     [SerializeField] private GameObject roomPrefab;
     [SerializeField] private Transform roomContent;
     List<GameObject> roomObjectList = new List<GameObject>();
@@ -43,6 +44,8 @@ public class MainMenuController : MonoBehaviour
     {
         gameTitleMaxPosition = gameTitleHighLimit.position;
         gameTitleMinPosition = gameTitleLowLimit.position;
+
+        statusMessage.text = "...";
     }
 
     private void Update()
@@ -59,6 +62,11 @@ public class MainMenuController : MonoBehaviour
         if (gameTitleRotationAnimationTimer > 1f) { gameTitleRotationAnimationTimer = 1f; gameTitleRotationAnimationInvertDirection = true; }
     }
 
+    public void SetStatusMassege(string newMessage)
+    {
+        statusMessage.text = newMessage;
+    }
+
     /* * * * * * * * * * * * * * */
     /*  Menu Interaction Methods */
     /* * * * * * * * * * * * * * */
@@ -68,6 +76,7 @@ public class MainMenuController : MonoBehaviour
     public void OnPlayButtonPressed()
     {
         Debug.Log("[MainMenuController] Connecting to Server...");
+        this.SetStatusMassege("Connecting to Server...");
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -82,6 +91,7 @@ public class MainMenuController : MonoBehaviour
     public void OnBackButtonPressed()
     {
         Debug.Log("[MainMenuController] Disconnecting from Lobby...");
+        this.SetStatusMassege("Disconnecting from Lobby...");
         PhotonNetwork.LeaveLobby();
     }
 
@@ -95,23 +105,26 @@ public class MainMenuController : MonoBehaviour
     public void OnCreateRoomButtonPressed()
     {
         Debug.Log($"[MainMenuController] Creating \"{PhotonNetwork.NickName}\" Room...");
+        this.SetStatusMassege($"Creating \"{PhotonNetwork.NickName}\" Room...");
         PhotonNetwork.CreateRoom(PhotonNetwork.NickName);
     }
 
     public void CreateRoomButtonCallback()
     {
-        // nao tem
+        // vai ter
     }
 
     // Join Room
     public void OnJoinRoomButtonPressed(TextMeshProUGUI roomName)
     {
+        Debug.Log($"[MainMenuController] Joining \"{roomName.text}\" Room...");
+        this.SetStatusMassege($"Joining \"{roomName.text}\" Room...");
         PhotonNetwork.JoinRoom(roomName.text);
     }
 
     public void JoinRoomButtonCallback()
     {
-        // nao tem tbm
+        // vai ter tbm
     }
 
     // Room List
