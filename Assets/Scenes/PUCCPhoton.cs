@@ -1,14 +1,17 @@
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PUCCPhoton : MonoBehaviourPunCallbacks
 {
+    [SerializeField] private TextMeshProUGUI userList;
+
     private void Start()
     {
         Debug.Log("[PUCCPhoton] Connecting to Server...");
-        PhotonNetwork.GameVersion = Application.version;
+        PhotonNetwork.GameVersion = "0.1";
         PhotonNetwork.NickName = "JEZUIZ";
         PhotonNetwork.ConnectUsingSettings();
     }
@@ -43,15 +46,28 @@ public class PUCCPhoton : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("[PUCCPhoton] Client Successfully Joined Room");
+        UpdatePlayerList();
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Debug.Log($"[PUCCPhoton] Player {newPlayer.NickName} Joined Room");
+        UpdatePlayerList();
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         Debug.Log($"[PUCCPhoton] Player {otherPlayer.NickName} Left Room");
+        UpdatePlayerList();
+    }
+
+    private void UpdatePlayerList()
+    {
+        string list = "Player List:\n";
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            list += $"{player.NickName}\n";
+        }
+        userList.text = list;
     }
 }
