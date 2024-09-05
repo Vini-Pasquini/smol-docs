@@ -62,7 +62,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("[PhotonManager] Successfully Joined Room");
         MainMenuUIController.Instance.SetStatusMassege("Successfully Joined Room");
-        PhotonNetwork.LoadLevel("RoomLobby");
+        PhotonNetwork.LoadLevel("Room");
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
