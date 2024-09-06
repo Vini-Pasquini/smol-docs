@@ -6,8 +6,14 @@ using UnityEngine;
 
 public class PUCCPhoton : MonoBehaviourPunCallbacks
 {
-    [SerializeField] private TextMeshProUGUI userList;
-    [SerializeField] private Player myself;
+    public static PUCCPhoton Instance;
+
+    private PlayerController myself;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -33,42 +39,33 @@ public class PUCCPhoton : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinOrCreateRoom("PUCCRoom", roomOptions, null);
     }
 
-    public override void OnRoomListUpdate(List<RoomInfo> roomList)
-    {
-        string log = "";
-        foreach (RoomInfo room in roomList)
-        {
-            log += $"ROOM: {room.Name}\n";
-        }
-        Debug.Log($"[PUCCPhoton] {log}");
-    }
-
     public override void OnJoinedRoom()
     {
         Debug.Log("[PUCCPhoton] Client Successfully Joined Room");
-        PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
-        UpdatePlayerList();
+        myself = PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity).GetComponent<PlayerController>();
+        UIController.Instance.UpdatePlayerList();
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Debug.Log($"[PUCCPhoton] Player {newPlayer.NickName} Joined Room");
-        UpdatePlayerList();
+        UIController.Instance.UpdatePlayerList();
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         Debug.Log($"[PUCCPhoton] Player {otherPlayer.NickName} Left Room");
-        UpdatePlayerList();
+        UIController.Instance.UpdatePlayerList();
     }
 
-    private void UpdatePlayerList()
+    public void OnSendButtonPress()
     {
-        string list = "Player List:\n";
-        foreach (Player player in PhotonNetwork.PlayerList)
-        {
-            list += $"{player.NickName}\n";
-        }
-        userList.text = list;
+        myself.myPhotonView.RPC("ReceiveChat", RpcTarget.All, UIController.Instance.inputMessage.text);
+        UIController.Instance.inputMessage.text = "";
+    }
+
+    public void UpdateMessageContainer(string newMessage, PhotonMessageInfo info)
+    {
+        UIController.Instance.messagesContainer.text += newMessage + "\n";
     }
 }

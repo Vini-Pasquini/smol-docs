@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5528964515005022163}
   - component: {fileID: 8456196552687875170}
   - component: {fileID: -2084958353452690483}
+  - component: {fileID: 4700734703160719923}
   - component: {fileID: -1483768404538684237}
   - component: {fileID: 7599497308597760708}
   m_Layer: 0
@@ -131,6 +132,21 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &4700734703160719923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5490150450715492469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99b4daedc5e674a429acdf1e77da6a55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Speed: 10
+  JumpForce: 200
+  JumpTimeout: 0.5
 --- !u!114 &-1483768404538684237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,3 +175,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e77f3894931e85f478aef596a9ba3029, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myPhotonView: {fileID: 0}
