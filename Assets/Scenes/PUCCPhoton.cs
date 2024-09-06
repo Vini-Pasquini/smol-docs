@@ -7,6 +7,7 @@ using UnityEngine;
 public class PUCCPhoton : MonoBehaviourPunCallbacks
 {
     [SerializeField] private TextMeshProUGUI userList;
+    [SerializeField] private Player myself;
 
     private void Start()
     {
@@ -19,7 +20,6 @@ public class PUCCPhoton : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         Debug.Log("[PUCCPhoton] Successfully Connected to Server");
-
         Debug.Log("[PUCCPhoton] Connecting to Lobby...");
         PhotonNetwork.JoinLobby();
     }
@@ -46,6 +46,7 @@ public class PUCCPhoton : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("[PUCCPhoton] Client Successfully Joined Room");
+        PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
         UpdatePlayerList();
     }
 
