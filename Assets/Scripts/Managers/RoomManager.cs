@@ -7,10 +7,19 @@ public class RoomManager : MonoBehaviour
 {
     public static RoomManager Instance { get; private set; }
 
+    public GameObject myPlayer { get; private set; }
+    public PhotonView myPhotonView { get; private set; }
+
     private void Awake()
     {
-        if (GameObject.FindObjectsByType<RoomManager>(FindObjectsSortMode.None).Length > 1) { GameObject.Destroy(this.gameObject); return; }
+        // if (GameObject.FindObjectsByType<RoomManager>(FindObjectsSortMode.None).Length > 1) { GameObject.Destroy(this.gameObject); return; }
         Instance = this;
-        GameObject.DontDestroyOnLoad(this);
+        // GameObject.DontDestroyOnLoad(this);
+    }
+
+    private void Start()
+    {
+        myPlayer = PhotonNetwork.Instantiate("Doctor", Vector3.zero, Quaternion.identity);
+        myPhotonView = myPlayer.GetComponent<PhotonView>();
     }
 }

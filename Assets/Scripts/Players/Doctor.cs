@@ -6,7 +6,7 @@ using UnityEngine;
 public class Doctor : MonoBehaviour
 {
     private PhotonView photonView;
-    private Rigidbody rigidbody;
+    private Rigidbody doctorRigidbody;
 
     private float movementSpeed = 2f;
     private Vector3 newVelocity = Vector3.zero;
@@ -14,7 +14,9 @@ public class Doctor : MonoBehaviour
     private void Start()
     {
         this.photonView = this.GetComponent<PhotonView>();
-        this.rigidbody = this.GetComponent<Rigidbody>();
+        this.doctorRigidbody = this.GetComponent<Rigidbody>();
+
+        this.enabled = false; // until game starts
     }
 
     private void Update()
@@ -26,6 +28,6 @@ public class Doctor : MonoBehaviour
         newVelocity.x = movementSpeed * (Input.GetKey(KeyCode.A) ? -1 : (Input.GetKey(KeyCode.D) ? 1 : 0));
         newVelocity.y = movementSpeed * (Input.GetKey(KeyCode.W) ? 1 : (Input.GetKey(KeyCode.S) ? -1 : 0));
 
-        this.rigidbody.velocity = newVelocity;
+        this.doctorRigidbody.velocity = newVelocity;
     }
 }
