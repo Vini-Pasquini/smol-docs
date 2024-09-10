@@ -74,17 +74,4 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         MainMenuUIController.Instance.RoomListUpdate(roomList);
     }
-
-    /* RPC Calls */
-    public void RPCSendMessage(string outMessage)
-    {
-        RoomManager.Instance.myPhotonView.RPC(nameof(RecieveMessage), RpcTarget.Others, outMessage);
-    }
-
-    /* RPC Callbacks */
-    
-    [PunRPC] public void RecieveMessage(string inMessage)
-    {
-        RoomUIController.Instance.OnRecieveMessageCallback(inMessage);
-    }
 }

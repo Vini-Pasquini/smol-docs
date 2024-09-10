@@ -29,7 +29,7 @@ public class RoomUIController : MonoBehaviour
 
     public void OnSendMessageButtonPress()
     {
-        PhotonManager.Instance.RPCSendMessage(messageInputField.text);
+        RoomManager.Instance.myPlayerRPC.RPCSendMessage(messageInputField.text);
         this.WriteToChat($"me: {messageInputField.text}");
         messageInputField.text = string.Empty;
     }

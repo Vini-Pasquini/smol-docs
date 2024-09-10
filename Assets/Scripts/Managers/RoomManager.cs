@@ -8,6 +8,7 @@ public class RoomManager : MonoBehaviour
     public static RoomManager Instance { get; private set; }
 
     public GameObject myPlayer { get; private set; }
+    public PlayerRPC myPlayerRPC { get; private set; }
     public PhotonView myPhotonView { get; private set; }
 
     private void Awake()
@@ -20,6 +21,7 @@ public class RoomManager : MonoBehaviour
     private void Start()
     {
         myPlayer = PhotonNetwork.Instantiate("Doctor", Vector3.zero, Quaternion.identity);
+        myPlayerRPC = myPlayer.GetComponent<PlayerRPC>();
         myPhotonView = myPlayer.GetComponent<PhotonView>();
     }
 }
