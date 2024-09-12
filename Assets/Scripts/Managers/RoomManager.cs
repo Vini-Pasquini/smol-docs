@@ -11,11 +11,12 @@ public class RoomManager : MonoBehaviour
     public PlayerRPC myPlayerRPC { get; private set; }
     public PhotonView myPhotonView { get; private set; }
 
+    public DoctorType myDoctor { get; set; }
+    public DoctorType otherDoctor { get; set; }
+
     private void Awake()
     {
-        // if (GameObject.FindObjectsByType<RoomManager>(FindObjectsSortMode.None).Length > 1) { GameObject.Destroy(this.gameObject); return; }
         Instance = this;
-        // GameObject.DontDestroyOnLoad(this);
     }
 
     private void Start()
@@ -23,5 +24,8 @@ public class RoomManager : MonoBehaviour
         myPlayer = PhotonNetwork.Instantiate("Doctor", Vector3.zero, Quaternion.identity);
         myPlayerRPC = myPlayer.GetComponent<PlayerRPC>();
         myPhotonView = myPlayer.GetComponent<PhotonView>();
+
+        myDoctor = DoctorType.None;
+        otherDoctor = DoctorType.None;
     }
 }
