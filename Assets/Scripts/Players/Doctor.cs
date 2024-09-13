@@ -19,6 +19,14 @@ public class Doctor : MonoBehaviour
         this.enabled = false; // until game starts
     }
 
+    private void OnEnable()
+    {
+        if (RoomManager.Instance.runningLevel)
+        {
+            Debug.Log("TESTE");
+        }
+    }
+
     private void Update()
     {
         if (!this.photonView.IsMine) return;

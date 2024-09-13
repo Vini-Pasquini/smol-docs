@@ -14,6 +14,8 @@ public class RoomManager : MonoBehaviour
     public DoctorType myDoctor { get; private set; }
     public DoctorType otherDoctor { get; private set; }
 
+    public bool runningLevel { get; set; }
+
     private void Awake()
     {
         Instance = this;
@@ -27,6 +29,8 @@ public class RoomManager : MonoBehaviour
         
         myDoctor = DoctorType.None;
         otherDoctor = DoctorType.None;
+
+        runningLevel = false;
     }
 
     public void UpdateDoctorType(DoctorType newDoctorType, bool otherDoctor = false)
@@ -35,6 +39,12 @@ public class RoomManager : MonoBehaviour
         else { this.myDoctor = (this.myDoctor == DoctorType.None || this.myDoctor != newDoctorType ? newDoctorType : DoctorType.None); }
 
         RoomUIController.Instance.UpdateSelectedDoctorsPanel();
+    }
+
+    public void StartGame()
+    {
+        this.runningLevel = true;
+        myPlayer.GetComponent<Doctor>().enabled = true;
     }
 
     //public void DEV_TEST()

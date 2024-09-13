@@ -72,4 +72,10 @@ public class RoomUIController : MonoBehaviour
     {
         this.WriteToChat($"they: {newMessage}");
     }
+
+    /* Ready System */
+    public void OnReadyButtonPress()
+    {
+        RoomManager.Instance.StartGame();
+    }
 }
