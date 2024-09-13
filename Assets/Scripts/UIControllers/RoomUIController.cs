@@ -9,11 +9,17 @@ public class RoomUIController : MonoBehaviour
 {
     public static RoomUIController Instance { get; private set; }
 
+    [Header("Chat")]
     [SerializeField] private TMP_InputField messageInputField;
     [SerializeField] private TextMeshProUGUI messageContainer;
 
+    [Header("Doctor Selector")]
     [SerializeField] private Image gatheringDocSprite;
+    [SerializeField] private Image gatheringDocPlayerOverlay;
     [SerializeField] private Image combatDocSprite;
+    [SerializeField] private Image combatDocPlayerOverlay;
+
+    private Sprite[] playerOverlay;
 
     private void Awake()
     {
@@ -23,34 +29,30 @@ public class RoomUIController : MonoBehaviour
     private void Start()
     {
         messageContainer.text = string.Empty;
+        playerOverlay = Resources.LoadAll<Sprite>("PlayerOverlay");
     }
 
-    public void FlipSpriteAlpha(Image doctorSprite)
-    {
-        doctorSprite.color = new Color(doctorSprite.color.r, doctorSprite.color.g, doctorSprite.color.b, (doctorSprite.color.a >= 1f ? .5f : 1f));
-    }
-
-    /*  */
+    /* Doctor Selection */
     public void OnDoctorSelectButtonPress(int type)
     {
         DoctorType selectedType = (DoctorType)type;
 
         RoomManager.Instance.myPlayerRPC.RPCSelectDoctor(selectedType);
-        RoomManager.Instance.myDoctor = (RoomManager.Instance.myDoctor == DoctorType.None || RoomManager.Instance.myDoctor != selectedType ? selectedType : DoctorType.None);
-        switch (selectedType)
-        {
-            case DoctorType.GatheringDoctor:
-                this.FlipSpriteAlpha(gatheringDocSprite);
-                break;
-            case DoctorType.CombatDoctor:
-                this.FlipSpriteAlpha(combatDocSprite);
-                break;
-        }
+        RoomManager.Instance.UpdateDoctorType(selectedType, false);
     }
 
-    public void OnDoctorSelectedCallback(DoctorType selectedType)
+    public void OnOtherDoctorSelectedCallback(DoctorType selectedType)
     {
-        Debug.Log($"o amiguinho selecionou o boniquinho: {selectedType}");
+        RoomManager.Instance.UpdateDoctorType(selectedType, true);
+    }
+
+    public void UpdateSelectedDoctorsPanel()
+    {
+        gatheringDocPlayerOverlay.sprite = playerOverlay[(RoomManager.Instance.myDoctor == DoctorType.GatheringDoctor && RoomManager.Instance.otherDoctor == DoctorType.GatheringDoctor ? 3 : (RoomManager.Instance.myDoctor != DoctorType.GatheringDoctor && RoomManager.Instance.otherDoctor == DoctorType.GatheringDoctor ? 2 : (RoomManager.Instance.myDoctor == DoctorType.GatheringDoctor && RoomManager.Instance.otherDoctor != DoctorType.GatheringDoctor ? 1 : 0)))];
+        combatDocPlayerOverlay.sprite = playerOverlay[(RoomManager.Instance.myDoctor == DoctorType.CombatDoctor && RoomManager.Instance.otherDoctor == DoctorType.CombatDoctor ? 3 : (RoomManager.Instance.myDoctor != DoctorType.CombatDoctor && RoomManager.Instance.otherDoctor == DoctorType.CombatDoctor ? 2 : (RoomManager.Instance.myDoctor == DoctorType.CombatDoctor && RoomManager.Instance.otherDoctor != DoctorType.CombatDoctor ? 1 : 0)))];
+
+        gatheringDocSprite.color = new Color(gatheringDocSprite.color.r, gatheringDocSprite.color.g, gatheringDocSprite.color.b, (RoomManager.Instance.myDoctor != DoctorType.GatheringDoctor && RoomManager.Instance.otherDoctor != DoctorType.GatheringDoctor ? .125f : 1f));
+        combatDocSprite.color = new Color(combatDocSprite.color.r, combatDocSprite.color.g, combatDocSprite.color.b, (RoomManager.Instance.myDoctor != DoctorType.CombatDoctor && RoomManager.Instance.otherDoctor != DoctorType.CombatDoctor ? .125f : 1f));
     }
 
     /* Chat */

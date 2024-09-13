@@ -8,7 +8,7 @@ public class PlayerRPC : MonoBehaviour
     /* Calls */
     public void RPCSelectDoctor(DoctorType doctorType)
     {
-        RoomManager.Instance.myPhotonView.RPC(nameof(DoctorSelected), RpcTarget.Others, doctorType);
+        RoomManager.Instance.myPhotonView.RPC(nameof(OtherDoctorSelected), RpcTarget.Others, doctorType);
     }
 
     public void RPCSendMessage(string outMessage)
@@ -17,9 +17,9 @@ public class PlayerRPC : MonoBehaviour
     }
 
     /* Callbacks */
-    [PunRPC] public void DoctorSelected(DoctorType doctorType)
+    [PunRPC] public void OtherDoctorSelected(DoctorType doctorType)
     {
-        RoomUIController.Instance.OnDoctorSelectedCallback(doctorType);
+        RoomUIController.Instance.OnOtherDoctorSelectedCallback(doctorType);
     }
 
     [PunRPC] public void RecieveMessage(string inMessage)
