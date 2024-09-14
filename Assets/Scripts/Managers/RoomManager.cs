@@ -7,12 +7,21 @@ public class RoomManager : MonoBehaviour
 {
     public static RoomManager Instance { get; private set; }
 
+    [SerializeField] private Transform gatheringDoctorSpawn;
+    [SerializeField] private Transform combatDoctorSpawn;
+
+    public GameObject otherPlayer { get; private set; }
     public GameObject myPlayer { get; private set; }
     public PlayerRPC myPlayerRPC { get; private set; }
     public PhotonView myPhotonView { get; private set; }
 
-    public DoctorType myDoctor { get; private set; }
-    public DoctorType otherDoctor { get; private set; }
+    public Doctor myDoctor { get; private set; }
+    public Doctor otherDoctor { get; private set; }
+    public DoctorType myDoctorType { get; private set; }
+    public DoctorType otherDoctorType { get; private set; }
+
+    public bool myPlayerReady { get; private set; }
+    public bool otherPlayerReady { get; private set; }
 
     public bool runningLevel { get; set; }
 
@@ -23,28 +32,74 @@ public class RoomManager : MonoBehaviour
 
     private void Start()
     {
-        myPlayer = PhotonNetwork.Instantiate("Doctor", Vector3.zero, Quaternion.identity);
+        runningLevel = false;
+
+        myPlayer = PhotonNetwork.Instantiate("Doctor", Vector3.forward * -20f, Quaternion.identity);
         myPlayerRPC = myPlayer.GetComponent<PlayerRPC>();
         myPhotonView = myPlayer.GetComponent<PhotonView>();
         
-        myDoctor = DoctorType.None;
-        otherDoctor = DoctorType.None;
+        myDoctor = myPlayer.GetComponent<Doctor>();
+        
+        myDoctorType = DoctorType.None;
+        otherDoctorType = DoctorType.None;
 
-        runningLevel = false;
+        RoomUIController.Instance.UpdateWaitingForPlayersOverlay();
     }
 
     public void UpdateDoctorType(DoctorType newDoctorType, bool otherDoctor = false)
     {
-        if (otherDoctor) { this.otherDoctor = (this.otherDoctor == DoctorType.None || this.otherDoctor != newDoctorType ? newDoctorType : DoctorType.None); }
-        else { this.myDoctor = (this.myDoctor == DoctorType.None || this.myDoctor != newDoctorType ? newDoctorType : DoctorType.None); }
+        if (otherDoctor) { this.otherDoctorType = (this.otherDoctorType == DoctorType.None || this.otherDoctorType != newDoctorType ? newDoctorType : DoctorType.None); }
+        else { this.myDoctorType = (this.myDoctorType == DoctorType.None || this.myDoctorType != newDoctorType ? newDoctorType : DoctorType.None); }
 
         RoomUIController.Instance.UpdateSelectedDoctorsPanel();
+    }
+
+    public void ResetDoctorType()
+    {
+        this.myDoctorType = DoctorType.None;
+        this.otherDoctorType = DoctorType.None;
+
+        RoomUIController.Instance.UpdateSelectedDoctorsPanel();
+    }
+
+    public void UpdatePlayerReady(bool readyState, bool otherPlayer = false)
+    {
+        if (otherPlayer) { this.otherPlayerReady = readyState; }
+        else { this.myPlayerReady = readyState; }
+
+        RoomUIController.Instance.UpdateReadyButton();
+
+        if (this.myPlayerReady && this.otherPlayerReady)
+        {
+            this.StartGame();
+        }
+    }
+
+    public void ResetPlayerReady()
+    {
+        this.myPlayerReady = false;
+        this.otherPlayerReady = false;
+
+        RoomUIController.Instance.UpdateReadyButton();
     }
 
     public void StartGame()
     {
         this.runningLevel = true;
-        myPlayer.GetComponent<Doctor>().enabled = true;
+        
+        foreach (GameObject currentPlayer in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            if (currentPlayer == myPlayer) continue;
+            otherPlayer = currentPlayer;
+            break;
+        }
+
+        myDoctor.enabled = true;
+        myDoctor.DoctorInit((myDoctorType == DoctorType.GatheringDoctor ? this.gatheringDoctorSpawn : this.combatDoctorSpawn));
+        otherPlayer.GetComponent<Doctor>().enabled = true;
+        otherPlayer.GetComponent<SpriteRenderer>().color = (RoomManager.Instance.otherDoctorType == DoctorType.GatheringDoctor ? new Color(0f, 1f, .5f) : new Color(0f, .5f, 1f)); ; // mudar depois
+
+        RoomUIController.Instance.ChangeCanvas();
     }
 
     //public void DEV_TEST()

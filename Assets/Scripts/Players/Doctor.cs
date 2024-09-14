@@ -19,14 +19,6 @@ public class Doctor : MonoBehaviour
         this.enabled = false; // until game starts
     }
 
-    private void OnEnable()
-    {
-        if (RoomManager.Instance.runningLevel)
-        {
-            Debug.Log("TESTE");
-        }
-    }
-
     private void Update()
     {
         if (!this.photonView.IsMine) return;
@@ -37,5 +29,11 @@ public class Doctor : MonoBehaviour
         newVelocity.y = movementSpeed * (Input.GetKey(KeyCode.W) ? 1 : (Input.GetKey(KeyCode.S) ? -1 : 0));
 
         this.doctorRigidbody.velocity = newVelocity;
+    }
+
+    public void DoctorInit(Transform spawn)
+    {
+        this.transform.position = spawn.position;
+        this.GetComponent<SpriteRenderer>().color = (RoomManager.Instance.myDoctorType == DoctorType.GatheringDoctor ? new Color(0f, 1f, .5f) : new Color(0f, .5f, 1f)); // ph mudar pra sprite dps
     }
 }

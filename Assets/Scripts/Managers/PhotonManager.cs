@@ -65,9 +65,18 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel("Room");
     }
 
-    public override void OnPlayerEnteredRoom(Player newPlayer)
+    public override void OnPlayerEnteredRoom(Player otherPlayer)
     {
-        Debug.Log($"[PhotonManager] Player {newPlayer.NickName} Joined Room");
+        Debug.Log($"[PhotonManager] Player {otherPlayer.NickName} Joined Room");
+        RoomUIController.Instance.WriteToChat($"<color=#a0ffa0>Player {otherPlayer.NickName} Joined </color>");
+        RoomUIController.Instance.UpdateWaitingForPlayersOverlay();
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        Debug.Log($"[PhotonManager] Player {otherPlayer.NickName} Joined Room");
+        RoomUIController.Instance.WriteToChat($"<color=#ffa0a0>Player {otherPlayer.NickName} Left </color>");
+        RoomUIController.Instance.UpdateWaitingForPlayersOverlay();
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
