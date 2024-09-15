@@ -7,20 +7,26 @@ public class Doctor : MonoBehaviour
 {
     private PhotonView photonView;
     private Rigidbody doctorRigidbody;
+    private SpriteRenderer spriteRenderer;
 
     private float movementSpeed = 2f;
     private Vector3 newVelocity = Vector3.zero;
+
+    DoctorType doctorType;
 
     private void Start()
     {
         this.photonView = this.GetComponent<PhotonView>();
         this.doctorRigidbody = this.GetComponent<Rigidbody>();
+        this.spriteRenderer = this.GetComponentInChildren<SpriteRenderer>();
 
         this.enabled = false; // until game starts
     }
 
     private void Update()
     {
+        this.spriteRenderer.flipX = this.doctorRigidbody.velocity.x < 0f ? true : (this.doctorRigidbody.velocity.x > 0f ? false : this.spriteRenderer.flipX);
+
         if (!this.photonView.IsMine) return;
 
         newVelocity = Vector3.zero;
@@ -31,9 +37,11 @@ public class Doctor : MonoBehaviour
         this.doctorRigidbody.velocity = newVelocity;
     }
 
-    public void DoctorInit(Transform spawn)
+    public void DoctorInit(DoctorType inType, Vector3 spawnPosition)
     {
-        this.transform.position = spawn.position;
-        this.GetComponent<SpriteRenderer>().color = (RoomManager.Instance.myDoctorType == DoctorType.GatheringDoctor ? new Color(0f, 1f, .5f) : new Color(0f, .5f, 1f)); // ph mudar pra sprite dps
+        this.doctorType = inType;
+        this.spriteRenderer.sprite = (this.doctorType == DoctorType.GatheringDoctor ? Resources.Load<Sprite>("phGatheringDoctorSprite") : Resources.Load<Sprite>("phCombatDoctorSprite"));
+        if (spawnPosition == Vector3.zero) return;
+        this.transform.position = spawnPosition;
     }
 }

@@ -106,7 +106,9 @@ public class MainMenuUIController : MonoBehaviour
     {
         Debug.Log($"[MainMenuController] Creating \"{PhotonNetwork.NickName}\" Room...");
         this.SetStatusMassege($"Creating \"{PhotonNetwork.NickName}\" Room...");
-        PhotonNetwork.CreateRoom(PhotonNetwork.NickName);
+        RoomOptions roomOptions = new RoomOptions();
+        roomOptions.MaxPlayers = 2;
+        PhotonNetwork.CreateRoom(PhotonNetwork.NickName, roomOptions);
     }
 
     public void CreateRoomButtonCallback()
@@ -136,6 +138,7 @@ public class MainMenuUIController : MonoBehaviour
         {
             GameObject newRoomObject = GameObject.Instantiate(this.roomPrefab, this.roomContent);
             newRoomObject.GetComponentInChildren<TextMeshProUGUI>().text = currentRoom.Name;
+            newRoomObject.GetComponentInChildren<Button>().interactable = currentRoom.PlayerCount < currentRoom.MaxPlayers;
             roomObjectList.Add(newRoomObject);
             this.roomContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0f, (160f * this.roomContent.childCount) + 10f);
         }

@@ -87,7 +87,7 @@ public class RoomManager : MonoBehaviour
     {
         this.runningLevel = true;
         
-        foreach (GameObject currentPlayer in GameObject.FindGameObjectsWithTag("Player"))
+        foreach (GameObject currentPlayer in GameObject.FindGameObjectsWithTag("Player")) // TODO: adicionar spectator
         {
             if (currentPlayer == myPlayer) continue;
             otherPlayer = currentPlayer;
@@ -95,10 +95,11 @@ public class RoomManager : MonoBehaviour
         }
 
         myDoctor.enabled = true;
-        myDoctor.DoctorInit((myDoctorType == DoctorType.GatheringDoctor ? this.gatheringDoctorSpawn : this.combatDoctorSpawn));
+        myDoctor.DoctorInit(myDoctorType, (myDoctorType == DoctorType.GatheringDoctor ? this.gatheringDoctorSpawn.position : this.combatDoctorSpawn.position));
+        
         otherPlayer.GetComponent<Doctor>().enabled = true;
-        otherPlayer.GetComponent<SpriteRenderer>().color = (RoomManager.Instance.otherDoctorType == DoctorType.GatheringDoctor ? new Color(0f, 1f, .5f) : new Color(0f, .5f, 1f)); ; // mudar depois
-
+        otherPlayer.GetComponent<Doctor>().DoctorInit(otherDoctorType, Vector3.zero);
+        
         RoomUIController.Instance.ChangeCanvas();
     }
 
