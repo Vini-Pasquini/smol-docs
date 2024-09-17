@@ -21,6 +21,11 @@ public class PlayerRPC : MonoBehaviour
         RoomManager.Instance.myPhotonView.RPC(nameof(RecieveMessage), RpcTarget.Others, outMessage);
     }
 
+    public void RPCKillEnemy(Vector3 killPosition)
+    {
+        RoomManager.Instance.myPhotonView.RPC(nameof(EnemyKilled), RpcTarget.Others, killPosition);
+    }
+
     /* Callbacks */
     [PunRPC] public void RecieveMessage(string inMessage)
     {
@@ -35,5 +40,10 @@ public class PlayerRPC : MonoBehaviour
     [PunRPC] public void OtherPlayerSetReady(bool readyState)
     {
         RoomManager.Instance.UpdatePlayerReady(readyState, true);
+    }
+
+    [PunRPC] public void EnemyKilled(Vector3 killPosition)
+    {
+        RoomManager.Instance.SpawnEnemyPile(killPosition);
     }
 }

@@ -10,6 +10,13 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private Transform gatheringDoctorSpawn;
     [SerializeField] private Transform combatDoctorSpawn;
 
+    [SerializeField] private GameObject enemyPilePrefab;
+    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private Transform[] enemySpawnList;
+
+
+    RaycastHit hitInfo;
+
     public GameObject otherPlayer { get; private set; }
     public GameObject myPlayer { get; private set; }
     public PlayerRPC myPlayerRPC { get; private set; }
@@ -23,7 +30,7 @@ public class RoomManager : MonoBehaviour
     public bool myPlayerReady { get; private set; }
     public bool otherPlayerReady { get; private set; }
 
-    public bool runningLevel { get; set; }
+    public bool runningLevel { get; private set; }
 
     private void Awake()
     {
@@ -45,6 +52,68 @@ public class RoomManager : MonoBehaviour
 
         RoomUIController.Instance.UpdateWaitingForPlayersOverlay();
     }
+
+    private void Update()
+    {
+        if (!runningLevel) return;
+        switch (myDoctorType)
+        {
+            case DoctorType.GatheringDoctor:
+                LocalGatheringDoctorUpdate();
+                break;
+            case DoctorType.CombatDoctor:
+                LocalCombatDoctorUpdate();
+                break;
+            default:
+                Debug.Assert(false, "HOW THE FUCK DID YOU GET HERE?!");
+                break;
+        }
+    }
+
+    /* Gathering Doctor Stuff */
+
+    public void LocalGatheringDoctorUpdate()
+    {
+
+        if (Input.GetKeyDown(KeyCode.Mouse0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
+        {
+            if (hitInfo.transform.CompareTag("EnemyPile"))
+            {
+                Debug.Log("COLETOU");
+                Destroy(hitInfo.transform.gameObject);
+            }
+        }
+    }
+
+    public void SpawnEnemyPile(Vector3 spawPosition)
+    {
+        GameObject.Instantiate(enemyPilePrefab, spawPosition, Quaternion.identity);
+    }
+
+    /* Combat Doctor Stuff */
+
+    private float enemySpawnTimer = 5;
+
+    public void LocalCombatDoctorUpdate()
+    {
+        enemySpawnTimer -= Time.deltaTime;
+        if (enemySpawnTimer <= 0)
+        {
+            GameObject.Instantiate(enemyPrefab, enemySpawnList[Random.Range(0, enemySpawnList.Length)].position, Quaternion.identity);
+            enemySpawnTimer = 5;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Mouse0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
+        {
+            if (hitInfo.transform.CompareTag("Enemy"))
+            {
+                myPlayerRPC.RPCKillEnemy(hitInfo.transform.position);
+                Destroy(hitInfo.transform.gameObject);
+            }
+        }
+    }
+
+    /* Other Stuff */
 
     public void UpdateDoctorType(DoctorType newDoctorType, bool otherDoctor = false)
     {
@@ -102,14 +171,4 @@ public class RoomManager : MonoBehaviour
         
         RoomUIController.Instance.ChangeCanvas();
     }
-
-    //public void DEV_TEST()
-    //{
-    //    myPlayer = PhotonNetwork.Instantiate("Doctor", Vector3.zero, Quaternion.identity);
-    //    myPlayerRPC = myPlayer.GetComponent<PlayerRPC>();
-    //    myPhotonView = myPlayer.GetComponent<PhotonView>();
-    //
-    //    myDoctor = DoctorType.None;
-    //    otherDoctor = DoctorType.None;
-    //}
 }
