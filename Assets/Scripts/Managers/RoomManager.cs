@@ -14,7 +14,6 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private Transform[] enemySpawnList;
 
-
     RaycastHit hitInfo;
 
     public GameObject otherPlayer { get; private set; }
@@ -65,7 +64,6 @@ public class RoomManager : MonoBehaviour
                 LocalCombatDoctorUpdate();
                 break;
             default:
-                Debug.Assert(false, "HOW THE FUCK DID YOU GET HERE?!");
                 break;
         }
     }
@@ -74,15 +72,7 @@ public class RoomManager : MonoBehaviour
 
     public void LocalGatheringDoctorUpdate()
     {
-
-        if (Input.GetKeyDown(KeyCode.Mouse0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
-        {
-            if (hitInfo.transform.CompareTag("EnemyPile"))
-            {
-                Debug.Log("COLETOU");
-                Destroy(hitInfo.transform.gameObject);
-            }
-        }
+        // vai ter coisa aki, eu juro
     }
 
     public void SpawnEnemyPile(Vector3 spawPosition)
@@ -92,6 +82,7 @@ public class RoomManager : MonoBehaviour
 
     /* Combat Doctor Stuff */
 
+    private float enemySpawnInterval = 5;
     private float enemySpawnTimer = 5;
 
     public void LocalCombatDoctorUpdate()
@@ -99,17 +90,10 @@ public class RoomManager : MonoBehaviour
         enemySpawnTimer -= Time.deltaTime;
         if (enemySpawnTimer <= 0)
         {
-            GameObject.Instantiate(enemyPrefab, enemySpawnList[Random.Range(0, enemySpawnList.Length)].position, Quaternion.identity);
-            enemySpawnTimer = 5;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Mouse0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
-        {
-            if (hitInfo.transform.CompareTag("Enemy"))
-            {
-                myPlayerRPC.RPCKillEnemy(hitInfo.transform.position);
-                Destroy(hitInfo.transform.gameObject);
-            }
+            int spawnIndex = Random.Range(0, enemySpawnList.Length);
+            // TODO: adicionar um cap nessa kceta, pq ta spawnando a rodo, e se o player nao limpar, da kakinha
+            GameObject.Instantiate(enemyPrefab, enemySpawnList[spawnIndex].position, Quaternion.identity).GetComponent<EnemyController>().EnemyInit(this.enemySpawnList, spawnIndex);
+            enemySpawnTimer = enemySpawnInterval;
         }
     }
 
