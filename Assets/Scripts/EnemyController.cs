@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    public EnemyType enemyType { get; private set; }
+
     private Vector3[] positionList;
     private Vector3 startPosition;
     private Vector3 endPosition;
@@ -52,6 +54,9 @@ public class EnemyController : MonoBehaviour
         this.startPosition = this.positionList[this.startPositionIndex];
         this.endPositionIndex = positionList.Length;
         this.endPosition = this.positionList[this.endPositionIndex];
+
+        this.enemyType = (EnemyType)Random.Range(0, (int)EnemyType._count);
+        // change sprite
 
         this.hasBeenInit = true;
     }

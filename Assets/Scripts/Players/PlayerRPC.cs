@@ -27,23 +27,34 @@ public class PlayerRPC : MonoBehaviour
     }
 
     /* Callbacks */
-    [PunRPC] public void RecieveMessage(string inMessage)
+    [PunRPC]
+    public void RecieveMessage(string inMessage)
     {
         RoomUIController.Instance.OnRecieveMessageCallback(inMessage);
     }
-    
-    [PunRPC] public void OtherDoctorSelected(DoctorType doctorType)
+
+    [PunRPC]
+    public void OtherDoctorSelected(DoctorType doctorType)
     {
         RoomManager.Instance.UpdateDoctorType(doctorType, true);
     }
 
-    [PunRPC] public void OtherPlayerSetReady(bool readyState)
+    [PunRPC]
+    public void OtherPlayerSetReady(bool readyState)
     {
         RoomManager.Instance.UpdatePlayerReady(readyState, true);
     }
 
-    [PunRPC] public void EnemyKilled(Vector3 killPosition)
+    [PunRPC]
+    public void EnemyKilled(Vector3 killPosition)
     {
         RoomManager.Instance.SpawnEnemyPile(killPosition);
+    }
+
+    /* ph RPC */
+    [PunRPC]
+    public void ReloadAmmo(float ammoAmount)
+    {
+        RoomManager.Instance.myDoctor.AddAmmo(ammoAmount);
     }
 }

@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -29,6 +30,9 @@ public class RoomUIController : MonoBehaviour
     [Header("Ready System")]
     [SerializeField] private Button readyButton;
     [SerializeField] private TextMeshProUGUI readyButtonText;
+
+    [Header("Doctor Resources")]
+    [SerializeField] private TextMeshProUGUI resourcesDisplay;
 
     private Sprite[] playerOverlay;
 
@@ -112,5 +116,18 @@ public class RoomUIController : MonoBehaviour
     {
         roomLobbyCanvas.SetActive(false);
         gameplayCanvas.SetActive(true);
+    }
+
+    /* Resources */
+    public void UpdateResourcesDisplay() // mudar dps
+    {
+        Doctor doc = RoomManager.Instance.myDoctor;
+        if (RoomManager.Instance.myDoctorType == DoctorType.GatheringDoctor)
+        {
+            resourcesDisplay.text = $" Leucocitos: {doc.leukocyteAmount} / ---\n Pathogen: {doc.pathogenAmount} / ---\n Shrink Serum: {doc.shrinkSerumAmount}";
+            return;
+        }
+        resourcesDisplay.text = $" Morfina: {doc.morphineAmount} / ---\n Pathogen: {doc.vaccineAmount} / ---\n Shrink Serum: {doc.horseCooldown}";
+        return;
     }
 }

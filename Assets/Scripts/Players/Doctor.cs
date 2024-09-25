@@ -17,11 +17,30 @@ public class Doctor : MonoBehaviour
 
     RaycastHit hitInfo;
 
+    // gathering doc
+    public float leukocyteAmount { get; private set; } // generates vaccine
+    public float pathogenAmount { get; private set; } // generates morphine
+    public float shrinkSerumAmount { get; private set; }
+    // combat doc
+    public float morphineAmount { get; private set; } // kills leukocyte
+    public float vaccineAmount { get; private set; } // kills pathogen
+    public float horseCooldown { get; private set; }
+
     private void Start()
     {
         this.photonView = this.GetComponent<PhotonView>();
         this.doctorRigidbody = this.GetComponent<Rigidbody>();
         this.spriteRenderer = this.GetComponentInChildren<SpriteRenderer>();
+
+
+        // gathering doc
+        this.leukocyteAmount = 0f;
+        this.pathogenAmount = 0f;
+        this.shrinkSerumAmount = 0f;
+        // combat doc
+        this.morphineAmount = 10f;
+        this.vaccineAmount = 10f;
+        this.horseCooldown = 0f;
 
         this.enabled = false; // until game starts
     }
@@ -58,6 +77,7 @@ public class Doctor : MonoBehaviour
         this.spriteRenderer.sprite = (this.doctorType == DoctorType.GatheringDoctor ? Resources.Load<Sprite>("phGatheringDoctorSprite") : Resources.Load<Sprite>("phCombatDoctorSprite"));
         if (spawnPosition == Vector3.zero) return;
         this.transform.position = spawnPosition;
+        RoomUIController.Instance.UpdateResourcesDisplay();
     }
 
     /* Gathering Doctor Stuff */
@@ -68,9 +88,18 @@ public class Doctor : MonoBehaviour
         {
             if (hitInfo.transform.CompareTag("EnemyPile"))
             {
-                Debug.Log("COLETOU");
                 Destroy(hitInfo.transform.gameObject);
+
+                this.pathogenAmount++;
+
+                RoomUIController.Instance.UpdateResourcesDisplay();
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space)) // ph horse
+        {
+            RoomManager.Instance.myPhotonView.RPC("ReloadAmmo", RpcTarget.Others, this.pathogenAmount);
+            this.pathogenAmount = 0;
         }
     }
 
@@ -85,7 +114,16 @@ public class Doctor : MonoBehaviour
                 RoomManager.Instance.myPlayerRPC.RPCKillEnemy(hitInfo.transform.position);
                 Destroy(hitInfo.transform.gameObject);
                 RoomManager.Instance.enemyAmount--; // ph
+
+                this.vaccineAmount--;
+
+                RoomUIController.Instance.UpdateResourcesDisplay();
             }
         }
+    }
+
+    public void AddAmmo(float ammoAmount)
+    {
+        this.vaccineAmount += ammoAmount;
     }
 }
