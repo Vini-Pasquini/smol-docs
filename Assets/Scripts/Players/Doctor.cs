@@ -24,6 +24,7 @@ public class Doctor : MonoBehaviour
     // combat doc
     public float morphineAmount { get; private set; } // kills leukocyte
     public float vaccineAmount { get; private set; } // kills pathogen
+    public bool horseDeployed { get; private set; }
     public float horseCooldown { get; private set; }
 
     private void Start()
@@ -40,6 +41,7 @@ public class Doctor : MonoBehaviour
         // combat doc
         this.morphineAmount = 10f;
         this.vaccineAmount = 10f;
+        this.horseDeployed = false;
         this.horseCooldown = 0f;
 
         this.enabled = false; // until game starts
