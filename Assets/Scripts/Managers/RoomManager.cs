@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RoomManager : MonoBehaviour
@@ -31,6 +32,8 @@ public class RoomManager : MonoBehaviour
 
     public bool runningLevel { get; private set; }
 
+    public int enemyAmount { get; set; }
+
     private void Awake()
     {
         Instance = this;
@@ -48,6 +51,8 @@ public class RoomManager : MonoBehaviour
         
         myDoctorType = DoctorType.None;
         otherDoctorType = DoctorType.None;
+
+        enemyAmount = 0;
 
         RoomUIController.Instance.UpdateWaitingForPlayersOverlay();
     }
@@ -82,18 +87,19 @@ public class RoomManager : MonoBehaviour
 
     /* Combat Doctor Stuff */
 
-    private float enemySpawnInterval = 5;
+    private float enemySpawnInterval = .5f;
     private float enemySpawnTimer = 5;
 
     public void LocalCombatDoctorUpdate()
     {
         enemySpawnTimer -= Time.deltaTime;
-        if (enemySpawnTimer <= 0)
+        if (enemySpawnTimer <= 0 && enemyAmount < 89)
         {
             int spawnIndex = Random.Range(0, enemySpawnList.Length);
             // TODO: adicionar um cap nessa kceta, pq ta spawnando a rodo, e se o player nao limpar, da kakinha
             GameObject.Instantiate(enemyPrefab, enemySpawnList[spawnIndex].position, Quaternion.identity).GetComponent<EnemyController>().EnemyInit(this.enemySpawnList, spawnIndex);
             enemySpawnTimer = enemySpawnInterval;
+            enemyAmount++;
         }
     }
 

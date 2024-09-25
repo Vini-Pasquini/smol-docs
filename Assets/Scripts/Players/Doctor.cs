@@ -84,6 +84,7 @@ public class Doctor : MonoBehaviour
             {
                 RoomManager.Instance.myPlayerRPC.RPCKillEnemy(hitInfo.transform.position);
                 Destroy(hitInfo.transform.gameObject);
+                RoomManager.Instance.enemyAmount--; // ph
             }
         }
     }
