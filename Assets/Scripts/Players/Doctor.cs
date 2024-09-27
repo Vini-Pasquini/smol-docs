@@ -18,7 +18,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
     private SpriteRenderer spriteRenderer;
     private Animator doctorAnimator;
 
-    private float movementSpeed = 2f;
+    private float movementSpeed = 3f;
     private Vector3 newVelocity = Vector3.zero;
 
     DoctorType doctorType;

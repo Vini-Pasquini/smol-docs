@@ -6,6 +6,8 @@ public class EnemyController : MonoBehaviour // TODO: me livrar do mono
 {
     public EnemyType enemyType { get; private set; }
 
+    private SpriteRenderer spriteRenderer;
+
     private Vector3[] positionList;
     private Vector3 startPosition;
     private Vector3 endPosition;
@@ -16,8 +18,15 @@ public class EnemyController : MonoBehaviour // TODO: me livrar do mono
     private int startPositionIndex;
     private int endPositionIndex;
 
+    private void Start()
+    {
+        spriteRenderer = this.transform.GetChild(0).GetComponent<SpriteRenderer>();
+    }
+
     private void Update()
     {
+        spriteRenderer.sortingOrder = (int)(this.transform.position.y * -100f);
+
         if (!hasBeenInit) return;
 
         // placeholder movement
