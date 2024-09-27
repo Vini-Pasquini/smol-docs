@@ -9,8 +9,6 @@ using UnityEngine.UI;
 
 public class MainMenuUIController : MonoBehaviour
 {
-    public static MainMenuUIController Instance { get; private set; }
-
     [SerializeField] private TextMeshProUGUI statusMessage;
     [Header("Menu Screens")]
     [SerializeField] private GameObject TitleScreenCanvas;
@@ -34,11 +32,6 @@ public class MainMenuUIController : MonoBehaviour
     private bool gameTitleRotationAnimationInvertDirection = false;
     private float gameTitleRotationAnimationTimer = .5f;
     private float gameTitleRotationAnimationLength = 4.5f;
-
-    private void Awake()
-    {
-        Instance = this;
-    }
 
     private void Start()
     {

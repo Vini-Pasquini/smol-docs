@@ -5,8 +5,11 @@ using UnityEditor.Animations;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
-public class Doctor : MonoBehaviour
+public class Doctor : MonoBehaviour // TODO: me livrar do mono
 {
+    private RoomManager roomManager;
+    private RoomUIController roomUIController;
+
     [SerializeField] private AnimatorController combatDoctorAnimatorController;
     [SerializeField] private AnimatorController gatheringDoctorAnimatorController;
 
@@ -31,6 +34,12 @@ public class Doctor : MonoBehaviour
     public float vaccineAmount { get; private set; } // kills pathogen
     public bool horseDeployed { get; private set; }
     public float horseCooldown { get; private set; }
+
+    private void Awake()
+    {
+        roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
+        roomUIController = GameObject.Find("RoomUIController").GetComponent<RoomUIController>();
+    }
 
     private void Start()
     {
@@ -94,7 +103,7 @@ public class Doctor : MonoBehaviour
         this.doctorAnimator.runtimeAnimatorController = (this.doctorType == DoctorType.GatheringDoctor ? this.gatheringDoctorAnimatorController : this.combatDoctorAnimatorController);
         if (spawnPosition == Vector3.zero) return;
         this.transform.position = spawnPosition;
-        RoomUIController.Instance.UpdateResourcesDisplay();
+        roomUIController.UpdateResourcesDisplay();
     }
 
     /* Gathering Doctor Stuff */
@@ -109,13 +118,13 @@ public class Doctor : MonoBehaviour
 
                 this.pathogenAmount++;
 
-                RoomUIController.Instance.UpdateResourcesDisplay();
+                roomUIController.UpdateResourcesDisplay();
             }
         }
 
         if (Input.GetKeyDown(KeyCode.Space)) // ph horse
         {
-            RoomManager.Instance.myPhotonView.RPC("ReloadAmmo", RpcTarget.Others, this.pathogenAmount);
+            roomManager.myPhotonView.RPC("ReloadAmmo", RpcTarget.Others, this.pathogenAmount);
             this.pathogenAmount = 0;
         }
     }
@@ -128,13 +137,13 @@ public class Doctor : MonoBehaviour
         {
             if (hitInfo.transform.CompareTag("Enemy"))
             {
-                RoomManager.Instance.myPlayerRPC.RPCKillEnemy(hitInfo.transform.position);
+                roomManager.myPlayerRPC.RPCKillEnemy(hitInfo.transform.position);
                 Destroy(hitInfo.transform.gameObject);
-                RoomManager.Instance.enemyAmount--; // ph
+                roomManager.enemyAmount--; // ph
 
                 this.vaccineAmount--;
 
-                RoomUIController.Instance.UpdateResourcesDisplay();
+                roomUIController.UpdateResourcesDisplay();
             }
         }
     }

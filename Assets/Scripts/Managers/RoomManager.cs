@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class RoomManager : MonoBehaviour
 {
-    public static RoomManager Instance { get; private set; }
+    private RoomUIController roomUIController;
 
     [SerializeField] private Transform gatheringDoctorSpawn;
     [SerializeField] private Transform combatDoctorSpawn;
@@ -36,7 +36,8 @@ public class RoomManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        roomUIController = GameObject.Find("RoomUIController").GetComponent<RoomUIController>();
+        GameObject.Find("PhotonManager").GetComponent<PhotonManager>().InitRoomUIController();
     }
 
     private void Start()
@@ -54,7 +55,7 @@ public class RoomManager : MonoBehaviour
 
         enemyAmount = 0;
 
-        RoomUIController.Instance.UpdateWaitingForPlayersOverlay();
+        roomUIController.UpdateWaitingForPlayersOverlay();
     }
 
     private void Update()
@@ -110,7 +111,7 @@ public class RoomManager : MonoBehaviour
         if (otherDoctor) { this.otherDoctorType = (this.otherDoctorType == DoctorType.None || this.otherDoctorType != newDoctorType ? newDoctorType : DoctorType.None); }
         else { this.myDoctorType = (this.myDoctorType == DoctorType.None || this.myDoctorType != newDoctorType ? newDoctorType : DoctorType.None); }
 
-        RoomUIController.Instance.UpdateSelectedDoctorsPanel();
+        roomUIController.UpdateSelectedDoctorsPanel();
     }
 
     public void ResetDoctorType()
@@ -118,7 +119,7 @@ public class RoomManager : MonoBehaviour
         this.myDoctorType = DoctorType.None;
         this.otherDoctorType = DoctorType.None;
 
-        RoomUIController.Instance.UpdateSelectedDoctorsPanel();
+        roomUIController.UpdateSelectedDoctorsPanel();
     }
 
     public void UpdatePlayerReady(bool readyState, bool otherPlayer = false)
@@ -126,7 +127,7 @@ public class RoomManager : MonoBehaviour
         if (otherPlayer) { this.otherPlayerReady = readyState; }
         else { this.myPlayerReady = readyState; }
 
-        RoomUIController.Instance.UpdateReadyButton();
+        roomUIController.UpdateReadyButton();
 
         if (this.myPlayerReady && this.otherPlayerReady)
         {
@@ -139,7 +140,7 @@ public class RoomManager : MonoBehaviour
         this.myPlayerReady = false;
         this.otherPlayerReady = false;
 
-        RoomUIController.Instance.UpdateReadyButton();
+        roomUIController.UpdateReadyButton();
     }
 
     public void StartGame()
@@ -158,7 +159,7 @@ public class RoomManager : MonoBehaviour
         
         otherPlayer.GetComponent<Doctor>().enabled = true;
         otherPlayer.GetComponent<Doctor>().DoctorInit(otherDoctorType, Vector3.zero);
-        
-        RoomUIController.Instance.ChangeCanvas();
+
+        roomUIController.ChangeCanvas();
     }
 }

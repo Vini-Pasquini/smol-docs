@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class RoomUIController : MonoBehaviour
 {
-    public static RoomUIController Instance { get; private set; }
+    private RoomManager roomManager;
 
     [Header("Canvas")]
     [SerializeField] private GameObject roomLobbyCanvas;
@@ -38,7 +38,7 @@ public class RoomUIController : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
     }
 
     private void Start()
@@ -51,21 +51,21 @@ public class RoomUIController : MonoBehaviour
     public void UpdateWaitingForPlayersOverlay()
     {
         waitingForPlayersOverlay.SetActive(PhotonNetwork.CurrentRoom.PlayerCount <= 1);
-        RoomManager.Instance.ResetDoctorType();
+        roomManager.ResetDoctorType();
     }
 
     public void OnDoctorSelectButtonPress(int type)
     {
         DoctorType selectedType = (DoctorType)type;
 
-        RoomManager.Instance.myPlayerRPC.RPCSelectDoctor(selectedType);
-        RoomManager.Instance.UpdateDoctorType(selectedType, false);
+        roomManager.myPlayerRPC.RPCSelectDoctor(selectedType);
+        roomManager.UpdateDoctorType(selectedType, false);
     }
 
     public void UpdateSelectedDoctorsPanel()
     {
-        DoctorType myDoctorType = RoomManager.Instance.myDoctorType;
-        DoctorType otherDoctorType = RoomManager.Instance.otherDoctorType;
+        DoctorType myDoctorType = roomManager.myDoctorType;
+        DoctorType otherDoctorType = roomManager.otherDoctorType;
 
         gatheringDocPlayerOverlay.sprite = playerOverlay[(myDoctorType == DoctorType.GatheringDoctor && otherDoctorType == DoctorType.GatheringDoctor ? 3 : (myDoctorType != DoctorType.GatheringDoctor && otherDoctorType == DoctorType.GatheringDoctor ? 2 : (myDoctorType == DoctorType.GatheringDoctor && otherDoctorType != DoctorType.GatheringDoctor ? 1 : 0)))];
         combatDocPlayerOverlay.sprite = playerOverlay[(myDoctorType == DoctorType.CombatDoctor && otherDoctorType == DoctorType.CombatDoctor ? 3 : (myDoctorType != DoctorType.CombatDoctor && otherDoctorType == DoctorType.CombatDoctor ? 2 : (myDoctorType == DoctorType.CombatDoctor && otherDoctorType != DoctorType.CombatDoctor ? 1 : 0)))];
@@ -75,7 +75,7 @@ public class RoomUIController : MonoBehaviour
 
         // TODO: mudar interactable do botao pra apenas quando ambos os jogadores tiverem doutores diferentes selecionados
         readyButton.interactable = myDoctorType != DoctorType.None && otherDoctorType != DoctorType.None && myDoctorType != otherDoctorType;
-        RoomManager.Instance.ResetPlayerReady();
+        roomManager.ResetPlayerReady();
     }
 
     /* Chat */
@@ -86,7 +86,7 @@ public class RoomUIController : MonoBehaviour
 
     public void OnSendMessageButtonPress()
     {
-        RoomManager.Instance.myPlayerRPC.RPCSendMessage(messageInputField.text);
+        roomManager.myPlayerRPC.RPCSendMessage(messageInputField.text);
         this.WriteToChat($"me: {messageInputField.text}");
         messageInputField.text = string.Empty;
     }
@@ -99,14 +99,14 @@ public class RoomUIController : MonoBehaviour
     /* Ready System */
     public void OnReadyButtonPress()
     {
-        RoomManager.Instance.myPlayerRPC.RPCSetReady(!RoomManager.Instance.myPlayerReady);
-        RoomManager.Instance.UpdatePlayerReady(!RoomManager.Instance.myPlayerReady, false);
+        roomManager.myPlayerRPC.RPCSetReady(!roomManager.myPlayerReady);
+        roomManager.UpdatePlayerReady(!roomManager.myPlayerReady, false);
     }
 
     public void UpdateReadyButton()
     {
-        bool myPlayerReady = RoomManager.Instance.myPlayerReady;
-        bool otherPlayerReady = RoomManager.Instance.otherPlayerReady;
+        bool myPlayerReady = roomManager.myPlayerReady;
+        bool otherPlayerReady = roomManager.otherPlayerReady;
 
         readyButtonText.text = (myPlayerReady && otherPlayerReady ? "STARTING..." : (myPlayerReady ? "[X] READY" : "[ ] READY"));
         readyButton.image.color = (myPlayerReady && otherPlayerReady ? Color.green : (otherPlayerReady ? Color.yellow : Color.white));
@@ -121,8 +121,8 @@ public class RoomUIController : MonoBehaviour
     /* Resources */
     public void UpdateResourcesDisplay() // mudar dps
     {
-        Doctor doc = RoomManager.Instance.myDoctor;
-        if (RoomManager.Instance.myDoctorType == DoctorType.GatheringDoctor)
+        Doctor doc = roomManager.myDoctor;
+        if (roomManager.myDoctorType == DoctorType.GatheringDoctor)
         {
             resourcesDisplay.text = $" Leucocitos: {doc.leukocyteAmount} / ---\n Pathogen: {doc.pathogenAmount} / ---\n Shrink Serum: {doc.shrinkSerumAmount}";
             return;
