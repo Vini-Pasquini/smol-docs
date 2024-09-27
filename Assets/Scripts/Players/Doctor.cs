@@ -1,14 +1,19 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class Doctor : MonoBehaviour
 {
+    [SerializeField] private AnimatorController combatDoctorAnimatorController;
+    [SerializeField] private AnimatorController gatheringDoctorAnimatorController;
+
     private PhotonView photonView;
     private Rigidbody doctorRigidbody;
     private SpriteRenderer spriteRenderer;
+    private Animator doctorAnimator;
 
     private float movementSpeed = 2f;
     private Vector3 newVelocity = Vector3.zero;
@@ -31,8 +36,8 @@ public class Doctor : MonoBehaviour
     {
         this.photonView = this.GetComponent<PhotonView>();
         this.doctorRigidbody = this.GetComponent<Rigidbody>();
-        this.spriteRenderer = this.GetComponentInChildren<SpriteRenderer>();
-
+        this.spriteRenderer = this.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        this.doctorAnimator = this.transform.GetChild(0).GetComponent<Animator>();
 
         // gathering doc
         this.leukocyteAmount = 0f;
@@ -49,14 +54,24 @@ public class Doctor : MonoBehaviour
 
     private void Update()
     {
+        this.spriteRenderer.sortingOrder = (int)(this.transform.position.y * -100f);
         this.spriteRenderer.flipX = this.doctorRigidbody.velocity.x < 0f ? true : (this.doctorRigidbody.velocity.x > 0f ? false : this.spriteRenderer.flipX);
+
+        if (this.doctorRigidbody.velocity.magnitude > .1f) // ph
+        {
+            this.doctorAnimator.Play("RUN");
+        }
+        else
+        {
+            this.doctorAnimator.Play("IDLE");
+        }
 
         if (!this.photonView.IsMine) return;
 
         newVelocity = Vector3.zero;
 
-        newVelocity.x = movementSpeed * (Input.GetKey(KeyCode.A) ? -1 : (Input.GetKey(KeyCode.D) ? 1 : 0));
-        newVelocity.y = movementSpeed * (Input.GetKey(KeyCode.W) ? 1 : (Input.GetKey(KeyCode.S) ? -1 : 0));
+        newVelocity.x = movementSpeed * (Input.GetKey(KeyCode.A) ? -1f : (Input.GetKey(KeyCode.D) ? 1f : 0f));
+        newVelocity.y = movementSpeed * (Input.GetKey(KeyCode.W) ? 1f : (Input.GetKey(KeyCode.S) ? -1f : 0f));
 
         this.doctorRigidbody.velocity = newVelocity;
 
@@ -76,7 +91,7 @@ public class Doctor : MonoBehaviour
     public void DoctorInit(DoctorType inType, Vector3 spawnPosition)
     {
         this.doctorType = inType;
-        this.spriteRenderer.sprite = (this.doctorType == DoctorType.GatheringDoctor ? Resources.Load<Sprite>("phGatheringDoctorSprite") : Resources.Load<Sprite>("phCombatDoctorSprite"));
+        this.doctorAnimator.runtimeAnimatorController = (this.doctorType == DoctorType.GatheringDoctor ? this.gatheringDoctorAnimatorController : this.combatDoctorAnimatorController);
         if (spawnPosition == Vector3.zero) return;
         this.transform.position = spawnPosition;
         RoomUIController.Instance.UpdateResourcesDisplay();

@@ -99,6 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 704f53b6505ea194dbe829e68bceea29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  combatDoctorAnimatorController: {fileID: 9100000, guid: e9457d81195776642be270a0b882d328, type: 2}
+  gatheringDoctorAnimatorController: {fileID: 9100000, guid: b95ad34db808e3949af49fe5f4700ba8, type: 2}
 --- !u!114 &-8526645753542181584
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,6 +179,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8803876224660201239}
   - component: {fileID: 446162158502494249}
+  - component: {fileID: 6524086261624588067}
   m_Layer: 0
   m_Name: DoctorSprite
   m_TagString: Untagged
@@ -251,3 +254,24 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &6524086261624588067
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6281130269686889434}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
