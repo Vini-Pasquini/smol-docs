@@ -8,6 +8,7 @@ using UnityEngine;
 public class RoomManager : MonoBehaviour
 {
     private RoomUIController roomUIController;
+    private PhotonManager photonManager;
 
     [SerializeField] private Transform gatheringDoctorSpawn;
     [SerializeField] private Transform combatDoctorSpawn;
@@ -50,7 +51,8 @@ public class RoomManager : MonoBehaviour
     private void Awake()
     {
         roomUIController = GameObject.Find("RoomUIController").GetComponent<RoomUIController>();
-        GameObject.Find("PhotonManager").GetComponent<PhotonManager>().InitRoomUIController();
+        photonManager = GameObject.Find("PhotonManager").GetComponent<PhotonManager>();
+        photonManager.InitRoomStuff();
     }
 
     private void Start()
@@ -173,7 +175,19 @@ public class RoomManager : MonoBehaviour
         this._otherPlayer.GetComponent<Doctor>().enabled = true;
         this._otherPlayer.GetComponent<Doctor>().DoctorInit(this._otherDoctorType, Vector3.zero);
 
-        roomUIController.ChangeCanvas();
+        roomUIController.ToggleLobbyCanvas(false);
+    }
+
+    public void ResetGame() // TODO: resetar tudo (preciso de um array de entidades)
+    {
+        this._runningLevel = false;
+
+        foreach (Doctor currentPlayer in GameObject.FindObjectsByType<Doctor>(FindObjectsInactive.Include, FindObjectsSortMode.None)) // TODO: adicionar spectator
+        {
+            currentPlayer.DoctorReset();
+        }
+
+        roomUIController.ToggleLobbyCanvas(true);
     }
 
     public void UpdateEnemyAmount(int increment)

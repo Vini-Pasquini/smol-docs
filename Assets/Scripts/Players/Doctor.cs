@@ -2,7 +2,6 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Animations;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class Doctor : MonoBehaviour // TODO: me livrar do mono
@@ -26,14 +25,21 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
     RaycastHit hitInfo;
 
     // gathering doc
-    public float leukocyteAmount { get; private set; } // generates vaccine
-    public float pathogenAmount { get; private set; } // generates morphine
-    public float shrinkSerumAmount { get; private set; }
+    private float _leukocyteAmount;  // generates vaccine
+    public float LeukocyteAmount { get { return this._leukocyteAmount; } }
+    private float _pathogenAmount; // generates morphine
+    public float PathogenAmount { get { return this._pathogenAmount; } }
+    private float _shrinkSerumAmount;
+    public float ShrinkSerumAmount { get { return this._shrinkSerumAmount; } }
     // combat doc
-    public float morphineAmount { get; private set; } // kills leukocyte
-    public float vaccineAmount { get; private set; } // kills pathogen
-    public bool horseDeployed { get; private set; }
-    public float horseCooldown { get; private set; }
+    private float _morphineAmount; // kills leukocyte
+    public float MorphineAmount { get { return this._morphineAmount; } }
+    private float _vaccineAmount; // kills pathogen
+    public float VaccineAmount { get { return this._vaccineAmount; } }
+    private bool _horseDeployed;
+    public bool HorseDeployed { get { return this._horseDeployed; } }
+    private float _horseCooldown;
+    public float HorseCooldown { get { return this._horseCooldown; } }
 
     private void Awake()
     {
@@ -49,14 +55,14 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         this.doctorAnimator = this.transform.GetChild(0).GetComponent<Animator>();
 
         // gathering doc
-        this.leukocyteAmount = 0f;
-        this.pathogenAmount = 0f;
-        this.shrinkSerumAmount = 0f;
+        this._leukocyteAmount = 0f;
+        this._pathogenAmount = 0f;
+        this._shrinkSerumAmount = 0f;
         // combat doc
-        this.morphineAmount = 10f;
-        this.vaccineAmount = 10f;
-        this.horseDeployed = false;
-        this.horseCooldown = 0f;
+        this._morphineAmount = 0f;
+        this._vaccineAmount = 0f;
+        this._horseDeployed = false;
+        this._horseCooldown = 0f;
 
         this.enabled = false; // until game starts
     }
@@ -103,7 +109,26 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         this.doctorAnimator.runtimeAnimatorController = (this.doctorType == DoctorType.GatheringDoctor ? this.gatheringDoctorAnimatorController : this.combatDoctorAnimatorController);
         if (spawnPosition == Vector3.zero) return;
         this.transform.position = spawnPosition;
+
+        // gathering doc
+        this._leukocyteAmount = 0f;
+        this._pathogenAmount = 0f;
+        this._shrinkSerumAmount = 0f;
+        // combat doc
+        this._morphineAmount = 0f;
+        this._vaccineAmount = 0f;
+        this._horseDeployed = false;
+        this._horseCooldown = 0f;
+
         roomUIController.UpdateResourcesDisplay();
+    }
+
+    public void DoctorReset()
+    {
+        this.doctorType = DoctorType.None;
+        this.transform.position = Vector3.forward * -20f;
+        
+        this.enabled = false; // until game starts again
     }
 
     /* Gathering Doctor Stuff */
@@ -116,7 +141,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
             {
                 Destroy(hitInfo.transform.gameObject);
 
-                this.pathogenAmount++;
+                this._pathogenAmount++;
 
                 roomUIController.UpdateResourcesDisplay();
             }
@@ -124,8 +149,8 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
         if (Input.GetKeyDown(KeyCode.Space)) // ph horse
         {
-            roomManager.MyPhotonView.RPC("ReloadAmmo", RpcTarget.Others, this.pathogenAmount);
-            this.pathogenAmount = 0;
+            roomManager.MyPhotonView.RPC("ReloadAmmo", RpcTarget.Others, this._pathogenAmount);
+            this._pathogenAmount = 0;
         }
     }
 
@@ -141,7 +166,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
                 Destroy(hitInfo.transform.gameObject);
                 roomManager.UpdateEnemyAmount(-1);
 
-                this.vaccineAmount--;
+                this._vaccineAmount--;
 
                 roomUIController.UpdateResourcesDisplay();
             }
@@ -150,6 +175,6 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
     public void AddAmmo(float ammoAmount)
     {
-        this.vaccineAmount += ammoAmount;
+        this._vaccineAmount += ammoAmount;
     }
 }

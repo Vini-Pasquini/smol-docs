@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour // TODO: me livrar do mono
+public class EnemyController : MonoBehaviour // TODO: me livrar do mono e talvez trocar pra scriptable
 {
-    public EnemyType enemyType { get; private set; }
+    private EnemyType _enemyType;
+    public EnemyType EnemyType { get { return this._enemyType; } }
 
     private SpriteRenderer spriteRenderer;
 
@@ -64,7 +65,7 @@ public class EnemyController : MonoBehaviour // TODO: me livrar do mono
         this.endPositionIndex = positionList.Length;
         this.endPosition = this.positionList[this.endPositionIndex];
 
-        this.enemyType = (EnemyType)Random.Range(0, (int)EnemyType._count);
+        this._enemyType = (EnemyType)Random.Range(0, (int)EnemyType._count);
         // change sprite
 
         this.hasBeenInit = true;

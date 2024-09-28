@@ -2,13 +2,14 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.EditorTools;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
     private MainMenuUIController mainMenuUIController;
     private RoomUIController roomUIController;
+    private RoomManager roomManager;
 
     private void Awake()
     {
@@ -17,9 +18,10 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         mainMenuUIController = GameObject.Find("MainMenuUIController").GetComponent<MainMenuUIController>();
     }
 
-    public void InitRoomUIController()
+    public void InitRoomStuff()
     {
         roomUIController = GameObject.Find("RoomUIController").GetComponent<RoomUIController>();
+        roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
     }
 
     private void Start()
@@ -84,6 +86,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         Debug.Log($"[PhotonManager] Player {otherPlayer.NickName} Joined Room");
         roomUIController.WriteToChat($"<color=#ffa0a0>Player {otherPlayer.NickName} Left </color>");
         roomUIController.UpdateWaitingForPlayersOverlay();
+        roomManager.ResetGame();
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)

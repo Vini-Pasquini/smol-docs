@@ -112,10 +112,10 @@ public class RoomUIController : MonoBehaviour
         readyButton.image.color = (myPlayerReady && otherPlayerReady ? Color.green : (otherPlayerReady ? Color.yellow : Color.white));
     }
 
-    public void ChangeCanvas()
+    public void ToggleLobbyCanvas(bool toggleOn)
     {
-        roomLobbyCanvas.SetActive(false);
-        gameplayCanvas.SetActive(true);
+        roomLobbyCanvas.SetActive(toggleOn);
+        gameplayCanvas.SetActive(!toggleOn);
     }
 
     /* Resources */
@@ -124,10 +124,10 @@ public class RoomUIController : MonoBehaviour
         Doctor doc = roomManager.MyDoctor;
         if (roomManager.MyDoctorType == DoctorType.GatheringDoctor)
         {
-            resourcesDisplay.text = $" Leucocitos: {doc.leukocyteAmount} / ---\n Pathogen: {doc.pathogenAmount} / ---\n Shrink Serum: {doc.shrinkSerumAmount}";
+            resourcesDisplay.text = $" Leucocitos: {doc.LeukocyteAmount} / ---\n Patogenos: {doc.PathogenAmount} / ---\n Soro de Encolhimento: {doc.ShrinkSerumAmount}";
             return;
         }
-        resourcesDisplay.text = $" Morfina: {doc.morphineAmount} / ---\n Pathogen: {doc.vaccineAmount} / ---\n Shrink Serum: {doc.horseCooldown}";
+        resourcesDisplay.text = $" Morfina: {doc.MorphineAmount} / ---\n Vacina: {doc.VaccineAmount} / ---\n C.A.V.A.L.O.: {doc.HorseCooldown}";
         return;
     }
 }
