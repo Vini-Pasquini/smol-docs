@@ -13,8 +13,8 @@ public class RoomUIController : MonoBehaviour
     [Header("Canvas")]
     [SerializeField] private GameObject roomLobbyCanvas;
     [SerializeField] private GameObject gameplayCanvas;
-    [SerializeField] private GameObject gatheringDocCanvas; // might change later
-    [SerializeField] private GameObject combatDocCanvas; // might change later
+    [SerializeField] private GameObject gatheringDocCanvas;
+    [SerializeField] private GameObject combatDocCanvas;
 
     [Header("Chat")]
     [SerializeField] private TMP_InputField messageInputField;
@@ -114,8 +114,12 @@ public class RoomUIController : MonoBehaviour
 
     public void ToggleLobbyCanvas(bool toggleOn)
     {
+        // lobby
         roomLobbyCanvas.SetActive(toggleOn);
+        // gameplay
         gameplayCanvas.SetActive(!toggleOn);
+        gatheringDocCanvas.SetActive(!toggleOn && roomManager.MyDoctorType == DoctorType.GatheringDoctor);
+        combatDocCanvas.SetActive(!toggleOn && roomManager.MyDoctorType == DoctorType.CombatDoctor);
     }
 
     /* Resources */

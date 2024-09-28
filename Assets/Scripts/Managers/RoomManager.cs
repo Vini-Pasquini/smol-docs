@@ -9,6 +9,7 @@ public class RoomManager : MonoBehaviour
 {
     private RoomUIController roomUIController;
     private PhotonManager photonManager;
+    private AudioManager audioManager;
 
     [SerializeField] private Transform gatheringDoctorSpawn;
     [SerializeField] private Transform combatDoctorSpawn;
@@ -52,6 +53,10 @@ public class RoomManager : MonoBehaviour
     {
         roomUIController = GameObject.Find("RoomUIController").GetComponent<RoomUIController>();
         photonManager = GameObject.Find("PhotonManager").GetComponent<PhotonManager>();
+        audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
+
+        audioManager.PlayAudioClip(AudioSample.Lobby);
+
         photonManager.InitRoomStuff();
     }
 
@@ -94,11 +99,13 @@ public class RoomManager : MonoBehaviour
     public void LocalGatheringDoctorUpdate()
     {
         // vai ter coisa aki, eu juro
+        // na real, acho que nao, nao lembro o uqe eu tava planejando por aki, vamo ver iuashdiusahdiusaz
     }
 
-    public void SpawnEnemyPile(Vector3 spawPosition)
+    public void SpawnEnemyPile(Vector3 spawPosition, EnemyType enemyType)
     {
-        GameObject.Instantiate(enemyPilePrefab, spawPosition, Quaternion.identity);
+        // TODO: guardar o tipo no scriptable dps que eu mudar
+        GameObject.Instantiate(enemyPilePrefab, spawPosition, Quaternion.identity).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"ph{enemyType}Remains");
     }
 
     /* Combat Doctor Stuff */
@@ -109,11 +116,11 @@ public class RoomManager : MonoBehaviour
     public void LocalCombatDoctorUpdate()
     {
         enemySpawnTimer -= Time.deltaTime;
-        if (enemySpawnTimer <= 0 && this._enemyAmount < 89)
+        if (enemySpawnTimer <= 0 && this._enemyAmount < 25)
         {
             int spawnIndex = Random.Range(0, enemySpawnList.Length);
-            // TODO: adicionar um cap nessa kceta, pq ta spawnando a rodo, e se o player nao limpar, da kakinha
-            GameObject.Instantiate(enemyPrefab, enemySpawnList[spawnIndex].position, Quaternion.identity).GetComponent<EnemyController>().EnemyInit(this.enemySpawnList, spawnIndex);
+            GameObject newEnemy = GameObject.Instantiate(enemyPrefab, enemySpawnList[spawnIndex].position, Quaternion.identity);
+            newEnemy.GetComponent<EnemyController>().EnemyInit(this.enemySpawnList, spawnIndex);
             enemySpawnTimer = enemySpawnInterval;
             this._enemyAmount++;
         }
@@ -176,6 +183,8 @@ public class RoomManager : MonoBehaviour
         this._otherPlayer.GetComponent<Doctor>().DoctorInit(this._otherDoctorType, Vector3.zero);
 
         roomUIController.ToggleLobbyCanvas(false);
+
+        audioManager.PlayAudioClip(AudioSample.Level);
     }
 
     public void ResetGame() // TODO: resetar tudo (preciso de um array de entidades)
@@ -188,6 +197,8 @@ public class RoomManager : MonoBehaviour
         }
 
         roomUIController.ToggleLobbyCanvas(true);
+
+        audioManager.PlayAudioClip(AudioSample.Lobby);
     }
 
     public void UpdateEnemyAmount(int increment)

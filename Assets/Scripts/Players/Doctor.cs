@@ -43,8 +43,8 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
     private void Awake()
     {
-        roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
-        roomUIController = GameObject.Find("RoomUIController").GetComponent<RoomUIController>();
+        this.roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
+        this.roomUIController = GameObject.Find("RoomUIController").GetComponent<RoomUIController>();
     }
 
     private void Start()
@@ -141,7 +141,15 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
             {
                 Destroy(hitInfo.transform.gameObject);
 
-                this._pathogenAmount++;
+                switch (hitInfo.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite.name) // gambeta, mudar dps pelo EnemyType do scriptable object
+                {
+                    case "phLeukocyteRemains":
+                        this._leukocyteAmount++;
+                        break;
+                    case "phPathogenVirusRemains": case "phPathogenBacteriaRemains":
+                        this._pathogenAmount++;
+                        break;
+                }
 
                 roomUIController.UpdateResourcesDisplay();
             }
@@ -162,11 +170,20 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         {
             if (hitInfo.transform.CompareTag("Enemy"))
             {
-                roomManager.MyPlayerRPC.RPCKillEnemy(hitInfo.transform.position);
+                EnemyType enemyType = hitInfo.transform.GetComponent<EnemyController>().EnemyType;
+                roomManager.MyPlayerRPC.RPCKillEnemy(hitInfo.transform.position, enemyType);
                 Destroy(hitInfo.transform.gameObject);
                 roomManager.UpdateEnemyAmount(-1);
 
-                this._vaccineAmount--;
+                switch (enemyType)
+                {
+                    case EnemyType.Leukocyte:
+                        this._morphineAmount--;
+                        break;
+                    case EnemyType.PathogenVirus: case EnemyType.PathogenBacteria:
+                        this._vaccineAmount--;
+                        break;
+                }
 
                 roomUIController.UpdateResourcesDisplay();
             }

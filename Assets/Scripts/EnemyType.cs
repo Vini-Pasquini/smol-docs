@@ -2,6 +2,7 @@ public enum EnemyType // might change to scriptable
 {
     None,
     Leukocyte,
-    Pathogen,
+    PathogenVirus,
+    PathogenBacteria,
     _count,
 }

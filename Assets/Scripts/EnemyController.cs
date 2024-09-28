@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour // TODO: me livrar do mono e talvez trocar pra scriptable
@@ -7,7 +8,13 @@ public class EnemyController : MonoBehaviour // TODO: me livrar do mono e talvez
     private EnemyType _enemyType;
     public EnemyType EnemyType { get { return this._enemyType; } }
 
+    // ph
+    [SerializeField] private AnimatorController leukocyteAnimatorController;
+    [SerializeField] private AnimatorController pathogenVirusAnimatorController;
+    [SerializeField] private AnimatorController pathogenBacteriaAnimatorController;
+
     private SpriteRenderer spriteRenderer;
+    private Animator animator;
 
     private Vector3[] positionList;
     private Vector3 startPosition;
@@ -19,9 +26,10 @@ public class EnemyController : MonoBehaviour // TODO: me livrar do mono e talvez
     private int startPositionIndex;
     private int endPositionIndex;
 
-    private void Start()
+    private void Awake()
     {
         spriteRenderer = this.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        animator = this.transform.GetChild(0).GetComponent<Animator>();
     }
 
     private void Update()
@@ -65,9 +73,9 @@ public class EnemyController : MonoBehaviour // TODO: me livrar do mono e talvez
         this.endPositionIndex = positionList.Length;
         this.endPosition = this.positionList[this.endPositionIndex];
 
-        this._enemyType = (EnemyType)Random.Range(0, (int)EnemyType._count);
-        // change sprite
-
+        this._enemyType = (EnemyType)Random.Range(1, (int)EnemyType._count);
+        this.animator.runtimeAnimatorController = (this._enemyType == EnemyType.Leukocyte ? this.leukocyteAnimatorController : (this._enemyType == EnemyType.PathogenVirus ? this.pathogenVirusAnimatorController : this.pathogenBacteriaAnimatorController));
+        
         this.hasBeenInit = true;
     }
 }

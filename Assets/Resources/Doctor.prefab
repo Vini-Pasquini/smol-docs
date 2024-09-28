@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2049831813619738526}
   - component: {fileID: 8231805069089599277}
   - component: {fileID: 7357953891229893885}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Doctor
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -73,13 +73,13 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1148863193751127834}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 1eccc98a6d8b044408a217fa38722c38, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1024
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0

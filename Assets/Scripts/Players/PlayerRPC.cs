@@ -30,9 +30,9 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
         roomManager.MyPhotonView.RPC(nameof(RecieveMessage), RpcTarget.Others, outMessage);
     }
 
-    public void RPCKillEnemy(Vector3 killPosition)
+    public void RPCKillEnemy(Vector3 killPosition, EnemyType enemyType)
     {
-        roomManager.MyPhotonView.RPC(nameof(EnemyKilled), RpcTarget.Others, killPosition);
+        roomManager.MyPhotonView.RPC(nameof(EnemyKilled), RpcTarget.Others, killPosition, (int)enemyType);
     }
 
     /* Callbacks */
@@ -55,9 +55,9 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
     }
 
     [PunRPC]
-    public void EnemyKilled(Vector3 killPosition)
+    public void EnemyKilled(Vector3 killPosition, int enemyType)
     {
-        roomManager.SpawnEnemyPile(killPosition);
+        roomManager.SpawnEnemyPile(killPosition, (EnemyType)enemyType);
     }
 
     /* ph RPC */
