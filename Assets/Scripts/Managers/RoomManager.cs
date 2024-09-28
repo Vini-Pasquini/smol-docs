@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 
@@ -17,22 +18,34 @@ public class RoomManager : MonoBehaviour
 
     RaycastHit hitInfo;
 
-    public GameObject otherPlayer { get; private set; }
-    public GameObject myPlayer { get; private set; }
-    public PlayerRPC myPlayerRPC { get; private set; }
-    public PhotonView myPhotonView { get; private set; }
+    private GameObject _otherPlayer;
+    public GameObject OtherPlayer { get { return this._otherPlayer; } }
+    private GameObject _myPlayer;
+    public GameObject MyPlayer { get { return this._myPlayer; } }
+    private PlayerRPC _myPlayerRPC;
+    public PlayerRPC MyPlayerRPC { get { return this._myPlayerRPC; } }
+    private PhotonView _myPhotonView;
+    public PhotonView MyPhotonView { get { return this._myPhotonView; } }
 
-    public Doctor myDoctor { get; private set; }
-    public Doctor otherDoctor { get; private set; }
-    public DoctorType myDoctorType { get; private set; }
-    public DoctorType otherDoctorType { get; private set; }
+    private Doctor _myDoctor;
+    public Doctor MyDoctor { get { return this._myDoctor; } }
+    private Doctor _otherDoctor;
+    public Doctor OtherDoctor { get { return this._otherDoctor; } }
+    private DoctorType _myDoctorType;
+    public DoctorType MyDoctorType { get { return this._myDoctorType; } }
+    private DoctorType _otherDoctorType;
+    public DoctorType OtherDoctorType { get { return this._otherDoctorType; } }
 
-    public bool myPlayerReady { get; private set; }
-    public bool otherPlayerReady { get; private set; }
+    private bool _myPlayerReady;
+    public bool MyPlayerReady { get { return this._myPlayerReady; } }
+    private bool _otherPlayerReady;
+    public bool OtherPlayerReady { get { return this._otherPlayerReady; } }
 
-    public bool runningLevel { get; private set; }
+    private bool _runningLevel;
+    public bool RunningLevel { get { return this._runningLevel; } }
 
-    public int enemyAmount { get; set; }
+    private int _enemyAmount;
+    public int EnemyAmount { get { return this._enemyAmount; } }
 
     private void Awake()
     {
@@ -42,26 +55,26 @@ public class RoomManager : MonoBehaviour
 
     private void Start()
     {
-        runningLevel = false;
+        this._runningLevel = false;
 
-        myPlayer = PhotonNetwork.Instantiate("Doctor", Vector3.forward * -20f, Quaternion.identity);
-        myPlayerRPC = myPlayer.GetComponent<PlayerRPC>();
-        myPhotonView = myPlayer.GetComponent<PhotonView>();
-        
-        myDoctor = myPlayer.GetComponent<Doctor>();
-        
-        myDoctorType = DoctorType.None;
-        otherDoctorType = DoctorType.None;
+        this._myPlayer = PhotonNetwork.Instantiate("Doctor", Vector3.forward * -20f, Quaternion.identity);
+        this._myPlayerRPC = this._myPlayer.GetComponent<PlayerRPC>();
+        this._myPhotonView = this._myPlayer.GetComponent<PhotonView>();
 
-        enemyAmount = 0;
+        this._myDoctor = this._myPlayer.GetComponent<Doctor>();
+
+        this._myDoctorType = DoctorType.None;
+        this._otherDoctorType = DoctorType.None;
+
+        this._enemyAmount = 0;
 
         roomUIController.UpdateWaitingForPlayersOverlay();
     }
 
     private void Update()
     {
-        if (!runningLevel) return;
-        switch (myDoctorType)
+        if (!this._runningLevel) return;
+        switch (this._myDoctorType)
         {
             case DoctorType.GatheringDoctor:
                 LocalGatheringDoctorUpdate();
@@ -94,13 +107,13 @@ public class RoomManager : MonoBehaviour
     public void LocalCombatDoctorUpdate()
     {
         enemySpawnTimer -= Time.deltaTime;
-        if (enemySpawnTimer <= 0 && enemyAmount < 89)
+        if (enemySpawnTimer <= 0 && this._enemyAmount < 89)
         {
             int spawnIndex = Random.Range(0, enemySpawnList.Length);
             // TODO: adicionar um cap nessa kceta, pq ta spawnando a rodo, e se o player nao limpar, da kakinha
             GameObject.Instantiate(enemyPrefab, enemySpawnList[spawnIndex].position, Quaternion.identity).GetComponent<EnemyController>().EnemyInit(this.enemySpawnList, spawnIndex);
             enemySpawnTimer = enemySpawnInterval;
-            enemyAmount++;
+            this._enemyAmount++;
         }
     }
 
@@ -108,28 +121,28 @@ public class RoomManager : MonoBehaviour
 
     public void UpdateDoctorType(DoctorType newDoctorType, bool otherDoctor = false)
     {
-        if (otherDoctor) { this.otherDoctorType = (this.otherDoctorType == DoctorType.None || this.otherDoctorType != newDoctorType ? newDoctorType : DoctorType.None); }
-        else { this.myDoctorType = (this.myDoctorType == DoctorType.None || this.myDoctorType != newDoctorType ? newDoctorType : DoctorType.None); }
+        if (otherDoctor) { this._otherDoctorType = (this._otherDoctorType == DoctorType.None || this._otherDoctorType != newDoctorType ? newDoctorType : DoctorType.None); }
+        else { this._myDoctorType = (this._myDoctorType == DoctorType.None || this._myDoctorType != newDoctorType ? newDoctorType : DoctorType.None); }
 
         roomUIController.UpdateSelectedDoctorsPanel();
     }
 
     public void ResetDoctorType()
     {
-        this.myDoctorType = DoctorType.None;
-        this.otherDoctorType = DoctorType.None;
+        this._myDoctorType = DoctorType.None;
+        this._otherDoctorType = DoctorType.None;
 
         roomUIController.UpdateSelectedDoctorsPanel();
     }
 
     public void UpdatePlayerReady(bool readyState, bool otherPlayer = false)
     {
-        if (otherPlayer) { this.otherPlayerReady = readyState; }
-        else { this.myPlayerReady = readyState; }
+        if (otherPlayer) { this._otherPlayerReady = readyState; }
+        else { this._myPlayerReady = readyState; }
 
         roomUIController.UpdateReadyButton();
 
-        if (this.myPlayerReady && this.otherPlayerReady)
+        if (this._myPlayerReady && this._otherPlayerReady)
         {
             this.StartGame();
         }
@@ -137,29 +150,34 @@ public class RoomManager : MonoBehaviour
 
     public void ResetPlayerReady()
     {
-        this.myPlayerReady = false;
-        this.otherPlayerReady = false;
+        this._myPlayerReady = false;
+        this._otherPlayerReady = false;
 
         roomUIController.UpdateReadyButton();
     }
 
     public void StartGame()
     {
-        this.runningLevel = true;
+        this._runningLevel = true;
         
         foreach (GameObject currentPlayer in GameObject.FindGameObjectsWithTag("Player")) // TODO: adicionar spectator
         {
-            if (currentPlayer == myPlayer) continue;
-            otherPlayer = currentPlayer;
+            if (currentPlayer == this._myPlayer) continue;
+            this._otherPlayer = currentPlayer;
             break;
         }
 
-        myDoctor.enabled = true;
-        myDoctor.DoctorInit(myDoctorType, (myDoctorType == DoctorType.GatheringDoctor ? this.gatheringDoctorSpawn.position : this.combatDoctorSpawn.position));
-        
-        otherPlayer.GetComponent<Doctor>().enabled = true;
-        otherPlayer.GetComponent<Doctor>().DoctorInit(otherDoctorType, Vector3.zero);
+        this._myDoctor.enabled = true;
+        this._myDoctor.DoctorInit(this._myDoctorType, (this._myDoctorType == DoctorType.GatheringDoctor ? this.gatheringDoctorSpawn.position : this.combatDoctorSpawn.position));
+
+        this._otherPlayer.GetComponent<Doctor>().enabled = true;
+        this._otherPlayer.GetComponent<Doctor>().DoctorInit(this._otherDoctorType, Vector3.zero);
 
         roomUIController.ChangeCanvas();
+    }
+
+    public void UpdateEnemyAmount(int increment)
+    {
+        this._enemyAmount += increment;
     }
 }

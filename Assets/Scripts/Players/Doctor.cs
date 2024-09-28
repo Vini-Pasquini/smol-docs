@@ -124,7 +124,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
         if (Input.GetKeyDown(KeyCode.Space)) // ph horse
         {
-            roomManager.myPhotonView.RPC("ReloadAmmo", RpcTarget.Others, this.pathogenAmount);
+            roomManager.MyPhotonView.RPC("ReloadAmmo", RpcTarget.Others, this.pathogenAmount);
             this.pathogenAmount = 0;
         }
     }
@@ -137,9 +137,9 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         {
             if (hitInfo.transform.CompareTag("Enemy"))
             {
-                roomManager.myPlayerRPC.RPCKillEnemy(hitInfo.transform.position);
+                roomManager.MyPlayerRPC.RPCKillEnemy(hitInfo.transform.position);
                 Destroy(hitInfo.transform.gameObject);
-                roomManager.enemyAmount--; // ph
+                roomManager.UpdateEnemyAmount(-1);
 
                 this.vaccineAmount--;
 

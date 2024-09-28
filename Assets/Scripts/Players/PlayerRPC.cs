@@ -17,22 +17,22 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
     /* Calls */
     public void RPCSelectDoctor(DoctorType doctorType)
     {
-        roomManager.myPhotonView.RPC(nameof(OtherDoctorSelected), RpcTarget.Others, doctorType);
+        roomManager.MyPhotonView.RPC(nameof(OtherDoctorSelected), RpcTarget.Others, doctorType);
     }
 
     public void RPCSetReady(bool readyState)
     {
-        roomManager.myPhotonView.RPC(nameof(OtherPlayerSetReady), RpcTarget.Others, readyState);
+        roomManager.MyPhotonView.RPC(nameof(OtherPlayerSetReady), RpcTarget.Others, readyState);
     }
 
     public void RPCSendMessage(string outMessage)
     {
-        roomManager.myPhotonView.RPC(nameof(RecieveMessage), RpcTarget.Others, outMessage);
+        roomManager.MyPhotonView.RPC(nameof(RecieveMessage), RpcTarget.Others, outMessage);
     }
 
     public void RPCKillEnemy(Vector3 killPosition)
     {
-        roomManager.myPhotonView.RPC(nameof(EnemyKilled), RpcTarget.Others, killPosition);
+        roomManager.MyPhotonView.RPC(nameof(EnemyKilled), RpcTarget.Others, killPosition);
     }
 
     /* Callbacks */
@@ -64,6 +64,6 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
     [PunRPC]
     public void ReloadAmmo(float ammoAmount)
     {
-        roomManager.myDoctor.AddAmmo(ammoAmount);
+        roomManager.MyDoctor.AddAmmo(ammoAmount);
     }
 }

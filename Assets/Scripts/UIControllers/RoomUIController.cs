@@ -58,14 +58,14 @@ public class RoomUIController : MonoBehaviour
     {
         DoctorType selectedType = (DoctorType)type;
 
-        roomManager.myPlayerRPC.RPCSelectDoctor(selectedType);
+        roomManager.MyPlayerRPC.RPCSelectDoctor(selectedType);
         roomManager.UpdateDoctorType(selectedType, false);
     }
 
     public void UpdateSelectedDoctorsPanel()
     {
-        DoctorType myDoctorType = roomManager.myDoctorType;
-        DoctorType otherDoctorType = roomManager.otherDoctorType;
+        DoctorType myDoctorType = roomManager.MyDoctorType;
+        DoctorType otherDoctorType = roomManager.OtherDoctorType;
 
         gatheringDocPlayerOverlay.sprite = playerOverlay[(myDoctorType == DoctorType.GatheringDoctor && otherDoctorType == DoctorType.GatheringDoctor ? 3 : (myDoctorType != DoctorType.GatheringDoctor && otherDoctorType == DoctorType.GatheringDoctor ? 2 : (myDoctorType == DoctorType.GatheringDoctor && otherDoctorType != DoctorType.GatheringDoctor ? 1 : 0)))];
         combatDocPlayerOverlay.sprite = playerOverlay[(myDoctorType == DoctorType.CombatDoctor && otherDoctorType == DoctorType.CombatDoctor ? 3 : (myDoctorType != DoctorType.CombatDoctor && otherDoctorType == DoctorType.CombatDoctor ? 2 : (myDoctorType == DoctorType.CombatDoctor && otherDoctorType != DoctorType.CombatDoctor ? 1 : 0)))];
@@ -86,7 +86,7 @@ public class RoomUIController : MonoBehaviour
 
     public void OnSendMessageButtonPress()
     {
-        roomManager.myPlayerRPC.RPCSendMessage(messageInputField.text);
+        roomManager.MyPlayerRPC.RPCSendMessage(messageInputField.text);
         this.WriteToChat($"me: {messageInputField.text}");
         messageInputField.text = string.Empty;
     }
@@ -99,14 +99,14 @@ public class RoomUIController : MonoBehaviour
     /* Ready System */
     public void OnReadyButtonPress()
     {
-        roomManager.myPlayerRPC.RPCSetReady(!roomManager.myPlayerReady);
-        roomManager.UpdatePlayerReady(!roomManager.myPlayerReady, false);
+        roomManager.MyPlayerRPC.RPCSetReady(!roomManager.MyPlayerReady);
+        roomManager.UpdatePlayerReady(!roomManager.MyPlayerReady, false);
     }
 
     public void UpdateReadyButton()
     {
-        bool myPlayerReady = roomManager.myPlayerReady;
-        bool otherPlayerReady = roomManager.otherPlayerReady;
+        bool myPlayerReady = roomManager.MyPlayerReady;
+        bool otherPlayerReady = roomManager.OtherPlayerReady;
 
         readyButtonText.text = (myPlayerReady && otherPlayerReady ? "STARTING..." : (myPlayerReady ? "[X] READY" : "[ ] READY"));
         readyButton.image.color = (myPlayerReady && otherPlayerReady ? Color.green : (otherPlayerReady ? Color.yellow : Color.white));
@@ -121,8 +121,8 @@ public class RoomUIController : MonoBehaviour
     /* Resources */
     public void UpdateResourcesDisplay() // mudar dps
     {
-        Doctor doc = roomManager.myDoctor;
-        if (roomManager.myDoctorType == DoctorType.GatheringDoctor)
+        Doctor doc = roomManager.MyDoctor;
+        if (roomManager.MyDoctorType == DoctorType.GatheringDoctor)
         {
             resourcesDisplay.text = $" Leucocitos: {doc.leukocyteAmount} / ---\n Pathogen: {doc.pathogenAmount} / ---\n Shrink Serum: {doc.shrinkSerumAmount}";
             return;
