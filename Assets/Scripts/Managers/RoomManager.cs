@@ -208,10 +208,11 @@ public class RoomManager : MonoBehaviour
     {
         roomUIController.SetGameoverOverlay(hasWon);
 
-        foreach (Doctor currentPlayer in GameObject.FindObjectsByType<Doctor>(FindObjectsInactive.Include, FindObjectsSortMode.None)) // TODO: adicionar spectator
-        {
-            currentPlayer.enabled = false;
-        }
+        // ph
+        foreach (Doctor currentPlayer in GameObject.FindObjectsByType<Doctor>(FindObjectsInactive.Include, FindObjectsSortMode.None)) { currentPlayer.enabled = false; }
+
+        // ph
+        foreach (EnemyController currentEnemy in GameObject.FindObjectsByType<EnemyController>(FindObjectsInactive.Include, FindObjectsSortMode.None)) { currentEnemy.enabled = false; }
 
         this._runningLevel = false;
         this.audioManager.PlayAudioClip((hasWon ? AudioSample.Victory : AudioSample.Defeat));
@@ -221,10 +222,17 @@ public class RoomManager : MonoBehaviour
     {
         this._runningLevel = false;
 
-        foreach (Doctor currentPlayer in GameObject.FindObjectsByType<Doctor>(FindObjectsInactive.Include, FindObjectsSortMode.None)) // TODO: adicionar spectator
-        {
-            currentPlayer.DoctorReset();
-        }
+        // ph
+        foreach (Doctor currentPlayer in GameObject.FindObjectsByType<Doctor>(FindObjectsInactive.Include, FindObjectsSortMode.None)) { currentPlayer.DoctorReset(); }
+
+        // ph
+        foreach (GameObject currentEnemy in GameObject.FindGameObjectsWithTag("Enemy")) { GameObject.Destroy(currentEnemy); }
+        this._enemyAmount = 0;
+
+        // ph
+        foreach (GameObject currentPile in GameObject.FindGameObjectsWithTag("EnemyPile")) { GameObject.Destroy(currentPile); }
+
+        interactionArea.position = Vector3.forward * -30f;
 
         roomUIController.ToggleLobbyCanvas(true);
         audioManager.PlayAudioClip(AudioSample.Lobby);
