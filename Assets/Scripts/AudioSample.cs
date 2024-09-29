@@ -5,5 +5,7 @@ public enum AudioSample
     Lobby,
     Level,
     Boss,
+    Victory,
+    Defeat,
     _count,
 }

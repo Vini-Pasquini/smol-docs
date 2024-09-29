@@ -836,7 +836,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: NEW ROOM
+  m_text: NOVA SALA
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -863,8 +863,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 35
+  m_fontSizeBase: 35
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1290,6 +1290,8 @@ MonoBehaviour:
   bossAudioClip: {fileID: 8300000, guid: 317295824d2baa749950905535cbb9f2, type: 3}
   bossLoopAAudioClip: {fileID: 8300000, guid: 1985bb693aa6f6c4b8efebd7a0b6ac82, type: 3}
   bossLoopBAudioClip: {fileID: 8300000, guid: af47155c69af28c4395c5697ffa7efb5, type: 3}
+  victoryAudioClip: {fileID: 8300000, guid: 7d7cbdbb4ba64dc4cbfb9b15d10852eb, type: 3}
+  defeatAudioClip: {fileID: 8300000, guid: 7d7cbdbb4ba64dc4cbfb9b15d10852eb, type: 3}
 --- !u!1 &977939593
 GameObject:
   m_ObjectHideFlags: 0
@@ -1624,7 +1626,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BACK
+  m_text: VOLTAR
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1651,8 +1653,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 35
+  m_fontSizeBase: 35
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1936,7 +1938,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: PLAY
+  m_text: JOGAR
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2832,6 +2834,10 @@ PrefabInstance:
     - target: {fileID: 3212705662319260447, guid: 702d69bc06c17a2409f986bb67da4c93, type: 3}
       propertyPath: m_Name
       value: Room
+      objectReference: {fileID: 0}
+    - target: {fileID: 4636072674702267685, guid: 702d69bc06c17a2409f986bb67da4c93, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 7699569260883528769, guid: 702d69bc06c17a2409f986bb67da4c93, type: 3}
       propertyPath: m_Pivot.x

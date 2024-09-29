@@ -30,108 +30,197 @@ public class RoomUIController : MonoBehaviour
     [Header("Ready System")]
     [SerializeField] private Button readyButton;
     [SerializeField] private TextMeshProUGUI readyButtonText;
+    private Sprite[] playerOverlay;
 
     [Header("Doctor Resources")]
     [SerializeField] private TextMeshProUGUI resourcesDisplay;
 
-    private Sprite[] playerOverlay;
+    [Header("Gameover")]
+    [SerializeField] private GameObject gameOverCanvas;
+    [SerializeField] private RectTransform backToLobbyButtonRectTransform;
+
+    [SerializeField] private Image lossOverlayImage;
+    [SerializeField] private TextMeshProUGUI lossOverlayText;
+
+    public GameObject GameOverCanvas { get { return gameOverCanvas; } }
+
+    private GameObject loseOverlay;
+    private GameObject winOverlay;
+
+    private Color bufferColor;
+    private Vector3 bufferPosition;
+
+    private float animationTime = 0f;
+    private bool animateGameover = false;
 
     private void Awake()
     {
-        roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
+        this.roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
+
+        this.loseOverlay = this.gameOverCanvas.transform.GetChild(0).gameObject;
+        this.winOverlay = this.gameOverCanvas.transform.GetChild(1).gameObject;
     }
 
     private void Start()
     {
-        messageContainer.text = string.Empty;
-        playerOverlay = Resources.LoadAll<Sprite>("PlayerOverlay");
+        this.messageContainer.text = string.Empty;
+        this.playerOverlay = Resources.LoadAll<Sprite>("PlayerOverlay");
+    }
+
+    private void Update()
+    {
+        if (animateGameover)
+        {
+            // defeat
+            this.bufferColor = this.lossOverlayImage.color;
+            this.bufferColor.a =  Mathf.Lerp(0f, .75f, this.animationTime);
+            this.lossOverlayImage.color = this.bufferColor;
+
+            this.bufferColor = this.lossOverlayText.color;
+            this.bufferColor.a =  Mathf.Lerp(0f, 1f, this.animationTime);
+            this.lossOverlayText.color = this.bufferColor;
+
+            // victory
+
+            // common
+            this.bufferPosition = this.backToLobbyButtonRectTransform.anchoredPosition;
+            this.bufferPosition.y = Mathf.Lerp(-150f, 150f, this.animationTime);
+            this.backToLobbyButtonRectTransform.anchoredPosition = this.bufferPosition;
+
+            this.animationTime += Time.deltaTime;
+            if (this.animationTime > 1f) { this.animationTime = 1f; }
+        }
     }
 
     /* Doctor Selection */
-    public void UpdateWaitingForPlayersOverlay()
+    public void UpdateWaitingForPlayersOverlay(bool forceReset = false)
     {
-        waitingForPlayersOverlay.SetActive(PhotonNetwork.CurrentRoom.PlayerCount <= 1);
-        roomManager.ResetDoctorType();
+        this.waitingForPlayersOverlay.SetActive(PhotonNetwork.CurrentRoom.PlayerCount <= 1 || forceReset);
+        this.roomManager.ResetDoctorType();
     }
 
     public void OnDoctorSelectButtonPress(int type)
     {
         DoctorType selectedType = (DoctorType)type;
 
-        roomManager.MyPlayerRPC.RPCSelectDoctor(selectedType);
-        roomManager.UpdateDoctorType(selectedType, false);
+        this.roomManager.MyPlayerRPC.RPCSelectDoctor(selectedType);
+        this.roomManager.UpdateDoctorType(selectedType, false);
     }
 
     public void UpdateSelectedDoctorsPanel()
     {
-        DoctorType myDoctorType = roomManager.MyDoctorType;
-        DoctorType otherDoctorType = roomManager.OtherDoctorType;
+        DoctorType myDoctorType = this.roomManager.MyDoctorType;
+        DoctorType otherDoctorType = this.roomManager.OtherDoctorType;
 
-        gatheringDocPlayerOverlay.sprite = playerOverlay[(myDoctorType == DoctorType.GatheringDoctor && otherDoctorType == DoctorType.GatheringDoctor ? 3 : (myDoctorType != DoctorType.GatheringDoctor && otherDoctorType == DoctorType.GatheringDoctor ? 2 : (myDoctorType == DoctorType.GatheringDoctor && otherDoctorType != DoctorType.GatheringDoctor ? 1 : 0)))];
-        combatDocPlayerOverlay.sprite = playerOverlay[(myDoctorType == DoctorType.CombatDoctor && otherDoctorType == DoctorType.CombatDoctor ? 3 : (myDoctorType != DoctorType.CombatDoctor && otherDoctorType == DoctorType.CombatDoctor ? 2 : (myDoctorType == DoctorType.CombatDoctor && otherDoctorType != DoctorType.CombatDoctor ? 1 : 0)))];
+        this.gatheringDocPlayerOverlay.sprite = this.playerOverlay[(myDoctorType == DoctorType.GatheringDoctor && otherDoctorType == DoctorType.GatheringDoctor ? 3 : (myDoctorType != DoctorType.GatheringDoctor && otherDoctorType == DoctorType.GatheringDoctor ? 2 : (myDoctorType == DoctorType.GatheringDoctor && otherDoctorType != DoctorType.GatheringDoctor ? 1 : 0)))];
+        this.combatDocPlayerOverlay.sprite = this.playerOverlay[(myDoctorType == DoctorType.CombatDoctor && otherDoctorType == DoctorType.CombatDoctor ? 3 : (myDoctorType != DoctorType.CombatDoctor && otherDoctorType == DoctorType.CombatDoctor ? 2 : (myDoctorType == DoctorType.CombatDoctor && otherDoctorType != DoctorType.CombatDoctor ? 1 : 0)))];
 
-        gatheringDocSprite.color = new Color(gatheringDocSprite.color.r, gatheringDocSprite.color.g, gatheringDocSprite.color.b, (myDoctorType != DoctorType.GatheringDoctor && otherDoctorType != DoctorType.GatheringDoctor ? .125f : 1f));
-        combatDocSprite.color = new Color(combatDocSprite.color.r, combatDocSprite.color.g, combatDocSprite.color.b, (myDoctorType != DoctorType.CombatDoctor && otherDoctorType != DoctorType.CombatDoctor ? .125f : 1f));
+        this.gatheringDocSprite.color = new Color(this.gatheringDocSprite.color.r, this.gatheringDocSprite.color.g, this.gatheringDocSprite.color.b, (myDoctorType != DoctorType.GatheringDoctor && otherDoctorType != DoctorType.GatheringDoctor ? .125f : 1f));
+        this.combatDocSprite.color = new Color(this.combatDocSprite.color.r, this.combatDocSprite.color.g, this.combatDocSprite.color.b, (myDoctorType != DoctorType.CombatDoctor && otherDoctorType != DoctorType.CombatDoctor ? .125f : 1f));
 
-        // TODO: mudar interactable do botao pra apenas quando ambos os jogadores tiverem doutores diferentes selecionados
-        readyButton.interactable = myDoctorType != DoctorType.None && otherDoctorType != DoctorType.None && myDoctorType != otherDoctorType;
-        roomManager.ResetPlayerReady();
+        this.readyButton.interactable = myDoctorType != DoctorType.None && otherDoctorType != DoctorType.None && myDoctorType != otherDoctorType;
+        this.roomManager.ResetPlayerReady();
     }
 
     /* Chat */
     public void WriteToChat(string newLine)
     {
-        messageContainer.text += $"{newLine}\n";
+        this.messageContainer.text += $"{newLine}\n";
     }
 
     public void OnSendMessageButtonPress()
     {
-        roomManager.MyPlayerRPC.RPCSendMessage(messageInputField.text);
-        this.WriteToChat($"me: {messageInputField.text}");
-        messageInputField.text = string.Empty;
+        this.roomManager.MyPlayerRPC.RPCSendMessage(messageInputField.text);
+        this.WriteToChat($"<color=#FF0080>eu</color>: {messageInputField.text}");
+        this.messageInputField.text = string.Empty;
     }
 
     public void OnRecieveMessageCallback(string newMessage)
     {
-        this.WriteToChat($"they: {newMessage}");
+        this.WriteToChat($"<color=#FF8000>outro</color>: {newMessage}");
     }
 
     /* Ready System */
     public void OnReadyButtonPress()
     {
-        roomManager.MyPlayerRPC.RPCSetReady(!roomManager.MyPlayerReady);
-        roomManager.UpdatePlayerReady(!roomManager.MyPlayerReady, false);
+        this.roomManager.MyPlayerRPC.RPCSetReady(!roomManager.MyPlayerReady);
+        this.roomManager.UpdatePlayerReady(!roomManager.MyPlayerReady, false);
     }
 
     public void UpdateReadyButton()
     {
-        bool myPlayerReady = roomManager.MyPlayerReady;
-        bool otherPlayerReady = roomManager.OtherPlayerReady;
+        bool myPlayerReady = this.roomManager.MyPlayerReady;
+        bool otherPlayerReady = this.roomManager.OtherPlayerReady;
 
-        readyButtonText.text = (myPlayerReady && otherPlayerReady ? "STARTING..." : (myPlayerReady ? "[X] READY" : "[ ] READY"));
-        readyButton.image.color = (myPlayerReady && otherPlayerReady ? Color.green : (otherPlayerReady ? Color.yellow : Color.white));
+        this.readyButtonText.text = (myPlayerReady && otherPlayerReady ? "INICIANDO..." : (myPlayerReady ? "[X] PRONTO" : "[ ] PRONTO"));
+        this.readyButton.image.color = (myPlayerReady && otherPlayerReady ? Color.green : (otherPlayerReady ? Color.yellow : Color.white));
     }
 
     public void ToggleLobbyCanvas(bool toggleOn)
     {
         // lobby
-        roomLobbyCanvas.SetActive(toggleOn);
+        this.roomLobbyCanvas.SetActive(toggleOn);
         // gameplay
-        gameplayCanvas.SetActive(!toggleOn);
-        gatheringDocCanvas.SetActive(!toggleOn && roomManager.MyDoctorType == DoctorType.GatheringDoctor);
-        combatDocCanvas.SetActive(!toggleOn && roomManager.MyDoctorType == DoctorType.CombatDoctor);
+        this.gameplayCanvas.SetActive(!toggleOn);
+        this.gatheringDocCanvas.SetActive(!toggleOn && this.roomManager.MyDoctorType == DoctorType.GatheringDoctor);
+        this.combatDocCanvas.SetActive(!toggleOn && this.roomManager.MyDoctorType == DoctorType.CombatDoctor);
     }
 
     /* Resources */
     public void UpdateResourcesDisplay() // mudar dps
     {
-        Doctor doc = roomManager.MyDoctor;
-        if (roomManager.MyDoctorType == DoctorType.GatheringDoctor)
+        Doctor doc = this.roomManager.MyDoctor;
+        if (this.roomManager.MyDoctorType == DoctorType.GatheringDoctor)
         {
-            resourcesDisplay.text = $" Leucocitos: {doc.LeukocyteAmount} / ---\n Patogenos: {doc.PathogenAmount} / ---\n Soro de Encolhimento: {doc.ShrinkSerumAmount}";
+            this.resourcesDisplay.text = $"[RESTOS]\n Leucocitos: {doc.LeukocyteAmount} / ---\n Patogenos: {doc.PathogenAmount} / ---";
+            // this.resourcesDisplay.text = $"[RESTOS]\n Leucocitos: {doc.LeukocyteAmount} / ---\n Patogenos: {doc.PathogenAmount} / ---\n Soro de Encolhimento: {doc.ShrinkSerumAmount}";
             return;
         }
-        resourcesDisplay.text = $" Morfina: {doc.MorphineAmount} / ---\n Vacina: {doc.VaccineAmount} / ---\n C.A.V.A.L.O.: {doc.HorseCooldown}";
+        this.resourcesDisplay.text = $"[MUNICOES]\n Morfina: {doc.MorphineAmount} / ---\n Vacina: {doc.VaccineAmount} / ---";
+        // this.resourcesDisplay.text = $"[MUNICOES]\n Morfina: {doc.MorphineAmount} / ---\n Vacina: {doc.VaccineAmount} / ---\n C.A.V.A.L.O.: {doc.HorseCooldown}";
         return;
+    }
+
+    /* Gathering Doctor */
+    public void OnAmpouleButtonPress()
+    {
+        roomManager.MyPhotonView.RPC("ResetDoctorSize", RpcTarget.All);
+    }
+
+    /* Combat Doctor */
+    public void OnCavaloButtonPress()
+    {
+        roomManager.MyPhotonView.RPC("SendAmmoReloadRequest", RpcTarget.Others); // ph
+    }
+
+    /* Gameover */
+    public void SetGameoverOverlay(bool toggleVictoryOverlay)
+    {
+        this.gameplayCanvas.SetActive(false);
+        this.gatheringDocCanvas.SetActive(false);
+        this.combatDocCanvas.SetActive(false);
+
+        if (toggleVictoryOverlay) { this.winOverlay.SetActive(true); }
+        else { this.loseOverlay.SetActive(true); }
+
+        this.gameOverCanvas.SetActive(true);
+
+        this.animateGameover = true;
+        this.animationTime = 0f;
+    }
+
+    public void OnBackToLobbyButtonPress()
+    {
+        this.winOverlay.SetActive(false);
+        this.loseOverlay.SetActive(false);
+        this.gameOverCanvas.SetActive(false);
+
+        this.UpdateWaitingForPlayersOverlay(true);
+        roomManager.MyPhotonView.RPC("OtherPlayerBackToLobby", RpcTarget.Others);
+
+        roomManager.ResetGame();
+
+        this.animateGameover = false;
+        this.animationTime = 0f;
     }
 }

@@ -14,11 +14,15 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
     private PhotonView photonView;
     private Rigidbody doctorRigidbody;
-    private SpriteRenderer spriteRenderer;
+    private SpriteRenderer doctorSpriteRenderer;
     private Animator doctorAnimator;
 
     private float movementSpeed = 3f;
     private Vector3 newVelocity = Vector3.zero;
+
+    private const float scaleCooldown = 2f;
+    private float scaleTimer = 1f;
+    private float scaleFactor = .1f;
 
     DoctorType doctorType;
 
@@ -51,7 +55,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
     {
         this.photonView = this.GetComponent<PhotonView>();
         this.doctorRigidbody = this.GetComponent<Rigidbody>();
-        this.spriteRenderer = this.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        this.doctorSpriteRenderer = this.transform.GetChild(0).GetComponent<SpriteRenderer>();
         this.doctorAnimator = this.transform.GetChild(0).GetComponent<Animator>();
 
         // gathering doc
@@ -69,17 +73,12 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
     private void Update()
     {
-        this.spriteRenderer.sortingOrder = (int)(this.transform.position.y * -100f);
-        this.spriteRenderer.flipX = this.doctorRigidbody.velocity.x < 0f ? true : (this.doctorRigidbody.velocity.x > 0f ? false : this.spriteRenderer.flipX);
+        this.doctorSpriteRenderer.sortingOrder = (int)(this.transform.position.y * -100f);
+        this.doctorSpriteRenderer.flipX = this.doctorRigidbody.velocity.x < 0f ? true : (this.doctorRigidbody.velocity.x > 0f ? false : this.doctorSpriteRenderer.flipX);
 
-        if (this.doctorRigidbody.velocity.magnitude > .1f) // ph
-        {
-            this.doctorAnimator.Play("RUN");
-        }
-        else
-        {
-            this.doctorAnimator.Play("IDLE");
-        }
+        // ph
+        if (this.doctorRigidbody.velocity.magnitude > .1f) { this.doctorAnimator.Play("RUN"); }
+        else { this.doctorAnimator.Play("IDLE"); }
 
         if (!this.photonView.IsMine) return;
 
@@ -101,6 +100,14 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
             default:
                 break;
         }
+
+        if (this.scaleTimer <= 0f)
+        {
+            this.transform.localScale += Vector3.one * this.scaleFactor;
+            this.scaleTimer = scaleCooldown;
+        }
+
+        this.scaleTimer -= Time.deltaTime;
     }
 
     public void DoctorInit(DoctorType inType, Vector3 spawnPosition)
@@ -127,6 +134,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
     {
         this.doctorType = DoctorType.None;
         this.transform.position = Vector3.forward * -20f;
+        this.transform.localScale = Vector3.one;
         
         this.enabled = false; // until game starts again
     }
@@ -137,7 +145,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
     {
         if (Input.GetKeyDown(KeyCode.Mouse0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
         {
-            if (hitInfo.transform.CompareTag("EnemyPile"))
+            if (hitInfo.transform.CompareTag("EnemyPile") && (roomManager.MyPlayer.transform.position - hitInfo.transform.position).magnitude <= roomManager.InteractionReach)
             {
                 Destroy(hitInfo.transform.gameObject);
 
@@ -154,12 +162,6 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
                 roomUIController.UpdateResourcesDisplay();
             }
         }
-
-        if (Input.GetKeyDown(KeyCode.Space)) // ph horse
-        {
-            roomManager.MyPhotonView.RPC("ReloadAmmo", RpcTarget.Others, this._pathogenAmount);
-            this._pathogenAmount = 0;
-        }
     }
 
     /* Combat Doctor Stuff */
@@ -168,7 +170,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
     {
         if (Input.GetKeyDown(KeyCode.Mouse0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
         {
-            if (hitInfo.transform.CompareTag("Enemy"))
+            if (hitInfo.transform.CompareTag("Enemy") && (roomManager.MyPlayer.transform.position - hitInfo.transform.position).magnitude <= roomManager.InteractionReach)
             {
                 EnemyType enemyType = hitInfo.transform.GetComponent<EnemyController>().EnemyType;
                 roomManager.MyPlayerRPC.RPCKillEnemy(hitInfo.transform.position, enemyType);
@@ -190,8 +192,18 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         }
     }
 
-    public void AddAmmo(float ammoAmount)
+    public void AddAmmo(float morphine = 0f, float vaccine = 0f)
     {
-        this._vaccineAmount += ammoAmount;
+        this._morphineAmount += morphine;
+        this._vaccineAmount += vaccine;
+
+        roomUIController.UpdateResourcesDisplay();
+    }
+
+    public void ResetResources()
+    {
+        this._leukocyteAmount = this._pathogenAmount = 0f;
+
+        roomUIController.UpdateResourcesDisplay();
     }
 }

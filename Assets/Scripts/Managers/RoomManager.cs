@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using UnityEditor.EditorTools;
 using UnityEngine;
 
 public class RoomManager : MonoBehaviour
@@ -17,6 +18,8 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private GameObject enemyPilePrefab;
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private Transform[] enemySpawnList;
+
+    [SerializeField] private Transform interactionArea;
 
     RaycastHit hitInfo;
 
@@ -48,6 +51,14 @@ public class RoomManager : MonoBehaviour
 
     private int _enemyAmount;
     public int EnemyAmount { get { return this._enemyAmount; } }
+
+    private float _maxPlayerScale = 5f;
+
+    // nha
+    private float _interactionReach = 4f;
+    public float InteractionReach { get { return this._interactionReach; } }
+    private float _ampouleInteractionReach = 2.5f;
+    public float AmpouleInteractionReach { get { return this._ampouleInteractionReach; } }
 
     private void Awake()
     {
@@ -92,6 +103,13 @@ public class RoomManager : MonoBehaviour
             default:
                 break;
         }
+
+        if (this._myPlayer.transform.localScale.x >= this._maxPlayerScale || this._otherPlayer.transform.localScale.x >= this._maxPlayerScale)
+        {
+            this.EndGame(false);
+        }
+
+        this.interactionArea.position = this._myPlayer.transform.position;
     }
 
     /* Gathering Doctor Stuff */
@@ -169,7 +187,7 @@ public class RoomManager : MonoBehaviour
     {
         this._runningLevel = true;
         
-        foreach (GameObject currentPlayer in GameObject.FindGameObjectsWithTag("Player")) // TODO: adicionar spectator
+        foreach (GameObject currentPlayer in GameObject.FindGameObjectsWithTag("Player"))
         {
             if (currentPlayer == this._myPlayer) continue;
             this._otherPlayer = currentPlayer;
@@ -183,8 +201,20 @@ public class RoomManager : MonoBehaviour
         this._otherPlayer.GetComponent<Doctor>().DoctorInit(this._otherDoctorType, Vector3.zero);
 
         roomUIController.ToggleLobbyCanvas(false);
-
         audioManager.PlayAudioClip(AudioSample.Level);
+    }
+
+    public void EndGame(bool hasWon)
+    {
+        roomUIController.SetGameoverOverlay(hasWon);
+
+        foreach (Doctor currentPlayer in GameObject.FindObjectsByType<Doctor>(FindObjectsInactive.Include, FindObjectsSortMode.None)) // TODO: adicionar spectator
+        {
+            currentPlayer.enabled = false;
+        }
+
+        this._runningLevel = false;
+        this.audioManager.PlayAudioClip((hasWon ? AudioSample.Victory : AudioSample.Defeat));
     }
 
     public void ResetGame() // TODO: resetar tudo (preciso de um array de entidades)
@@ -197,12 +227,22 @@ public class RoomManager : MonoBehaviour
         }
 
         roomUIController.ToggleLobbyCanvas(true);
-
         audioManager.PlayAudioClip(AudioSample.Lobby);
     }
+
+    /* Running Game Stuff */
 
     public void UpdateEnemyAmount(int increment)
     {
         this._enemyAmount += increment;
+    }
+
+    public void ResetPlayerSize() // sla pq, mas só funciona na roomManager, gg
+    {
+
+        if ((this.MyPlayer.transform.position - this.OtherPlayer.transform.position).magnitude <= this._ampouleInteractionReach)
+        {
+            this._myPlayer.transform.localScale = Vector3.one;
+        }
     }
 }

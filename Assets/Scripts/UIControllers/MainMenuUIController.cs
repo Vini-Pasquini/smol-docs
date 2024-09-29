@@ -69,7 +69,7 @@ public class MainMenuUIController : MonoBehaviour
     public void OnPlayButtonPressed()
     {
         Debug.Log("[MainMenuController] Connecting to Server...");
-        this.SetStatusMassege("Connecting to Server...");
+        this.SetStatusMassege("Conectando ao Server...");
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -84,7 +84,7 @@ public class MainMenuUIController : MonoBehaviour
     public void OnBackButtonPressed()
     {
         Debug.Log("[MainMenuController] Disconnecting from Lobby...");
-        this.SetStatusMassege("Disconnecting from Lobby...");
+        this.SetStatusMassege("Desconectando do Lobby...");
         PhotonNetwork.LeaveLobby();
     }
 
@@ -98,7 +98,7 @@ public class MainMenuUIController : MonoBehaviour
     public void OnCreateRoomButtonPressed()
     {
         Debug.Log($"[MainMenuController] Creating \"{PhotonNetwork.NickName}\" Room...");
-        this.SetStatusMassege($"Creating \"{PhotonNetwork.NickName}\" Room...");
+        this.SetStatusMassege($"Criando Sala \"{PhotonNetwork.NickName}\"...");
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 2;
         PhotonNetwork.CreateRoom(PhotonNetwork.NickName, roomOptions);
@@ -113,7 +113,7 @@ public class MainMenuUIController : MonoBehaviour
     public void OnJoinRoomButtonPressed(TextMeshProUGUI roomName)
     {
         Debug.Log($"[MainMenuController] Joining \"{roomName.text}\" Room...");
-        this.SetStatusMassege($"Joining \"{roomName.text}\" Room...");
+        this.SetStatusMassege($"Entrando na Sala \"{roomName.text}\"...");
         PhotonNetwork.JoinRoom(roomName.text);
     }
 

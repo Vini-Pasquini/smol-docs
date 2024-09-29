@@ -14,10 +14,14 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
         roomUIController = GameObject.Find("RoomUIController").GetComponent<RoomUIController>();
     }
 
-    /* Calls */
     public void RPCSelectDoctor(DoctorType doctorType)
     {
         roomManager.MyPhotonView.RPC(nameof(OtherDoctorSelected), RpcTarget.Others, doctorType);
+    }
+
+    [PunRPC] public void OtherDoctorSelected(DoctorType doctorType)
+    {
+        roomManager.UpdateDoctorType(doctorType, true);
     }
 
     public void RPCSetReady(bool readyState)
@@ -25,9 +29,19 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
         roomManager.MyPhotonView.RPC(nameof(OtherPlayerSetReady), RpcTarget.Others, readyState);
     }
 
+    [PunRPC] public void OtherPlayerSetReady(bool readyState)
+    {
+        roomManager.UpdatePlayerReady(readyState, true);
+    }
+
     public void RPCSendMessage(string outMessage)
     {
         roomManager.MyPhotonView.RPC(nameof(RecieveMessage), RpcTarget.Others, outMessage);
+    }
+
+    [PunRPC] public void RecieveMessage(string inMessage)
+    {
+        roomUIController.OnRecieveMessageCallback(inMessage);
     }
 
     public void RPCKillEnemy(Vector3 killPosition, EnemyType enemyType)
@@ -35,35 +49,43 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
         roomManager.MyPhotonView.RPC(nameof(EnemyKilled), RpcTarget.Others, killPosition, (int)enemyType);
     }
 
-    /* Callbacks */
-    [PunRPC]
-    public void RecieveMessage(string inMessage)
-    {
-        roomUIController.OnRecieveMessageCallback(inMessage);
-    }
-
-    [PunRPC]
-    public void OtherDoctorSelected(DoctorType doctorType)
-    {
-        roomManager.UpdateDoctorType(doctorType, true);
-    }
-
-    [PunRPC]
-    public void OtherPlayerSetReady(bool readyState)
-    {
-        roomManager.UpdatePlayerReady(readyState, true);
-    }
-
-    [PunRPC]
-    public void EnemyKilled(Vector3 killPosition, int enemyType)
+    [PunRPC] public void EnemyKilled(Vector3 killPosition, int enemyType)
     {
         roomManager.SpawnEnemyPile(killPosition, (EnemyType)enemyType);
     }
 
-    /* ph RPC */
-    [PunRPC]
-    public void ReloadAmmo(float ammoAmount)
+    /* Solo RPC */
+    
+    [PunRPC] public void SendAmmoReloadRequest()
     {
-        roomManager.MyDoctor.AddAmmo(ammoAmount);
+        if (roomManager.MyDoctorType == DoctorType.GatheringDoctor)
+        {
+            roomManager.MyPhotonView.RPC(nameof(AmmoReloadAnswer), RpcTarget.Others, roomManager.MyDoctor.LeukocyteAmount, roomManager.MyDoctor.PathogenAmount);
+            roomManager.MyDoctor.ResetResources();
+        }
+    }
+
+    [PunRPC] public void AmmoReloadAnswer(float morphine, float vaccine)
+    {
+        if (roomManager.MyDoctorType == DoctorType.CombatDoctor)
+        {
+            roomManager.MyDoctor.AddAmmo(morphine, vaccine);
+        }
+    }
+
+    [PunRPC] public void ResetDoctorSize()
+    {
+        roomManager.ResetPlayerSize();
+    }
+
+    [PunRPC] public void OtherPlayerBackToLobby()
+    {
+        if (!roomUIController.GameOverCanvas.activeSelf) { roomUIController.UpdateWaitingForPlayersOverlay(); }
+        roomManager.MyPhotonView.RPC(nameof(OtherPlayerBackToLobbyCallback), RpcTarget.Others, roomUIController.GameOverCanvas.activeSelf);
+    }
+
+    [PunRPC] public void OtherPlayerBackToLobbyCallback(bool isOnLobby)
+    {
+        roomUIController.UpdateWaitingForPlayersOverlay(isOnLobby);
     }
 }

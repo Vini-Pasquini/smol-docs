@@ -46,6 +46,11 @@ MonoBehaviour:
   - OtherPlayerSetReady
   - EnemyKilled
   - ReloadAmmo
+  - OtherPlayerBackToLobby
+  - OtherPlayerBackToLobbyCallback
+  - ResetDoctorSize
+  - AmmoReloadAnswer
+  - SendAmmoReloadRequest
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -24,6 +24,10 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip bossLoopAAudioClip;
     [SerializeField] private AudioClip bossLoopBAudioClip;
 
+    [Header("Gameover")]
+    [SerializeField] private AudioClip victoryAudioClip;
+    [SerializeField] private AudioClip defeatAudioClip;
+
     private AudioSource _audioSource;
 
     private bool isIntense = false;
@@ -49,15 +53,18 @@ public class AudioManager : MonoBehaviour
         {
             switch (this.nowPlaying)
             {
+                case AudioSample.Defeat: case AudioSample.Victory: break;
                 case AudioSample.Level:
                     this._audioSource.clip = (this.isIntense ? this.levelLoopBAudioClip : this.levelLoopAAudioClip);
                     break;
                 case AudioSample.Boss:
                     this._audioSource.clip = (this.isIntense ? this.bossLoopBAudioClip : this.bossLoopAAudioClip);
                     break;
+                default:
+                    this._audioSource.loop = true;
+                    this._audioSource.Play();
+                    break;
             }
-            this._audioSource.loop = true;
-            this._audioSource.Play();
         }
     }
 
@@ -81,6 +88,14 @@ public class AudioManager : MonoBehaviour
                 break;
             case AudioSample.Boss:
                 this._audioSource.clip = this.bossAudioClip;
+                this._audioSource.loop = false;
+                break;
+            case AudioSample.Victory:
+                this._audioSource.clip = this.victoryAudioClip;
+                this._audioSource.loop = false;
+                break;
+            case AudioSample.Defeat:
+                this._audioSource.clip = this.defeatAudioClip;
                 this._audioSource.loop = false;
                 break;
         }
