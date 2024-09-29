@@ -1,9 +1,4 @@
 using Photon.Pun;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using UnityEditor.EditorTools;
 using UnityEngine;
 
 public class RoomManager : MonoBehaviour
