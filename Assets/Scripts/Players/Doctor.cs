@@ -1,5 +1,4 @@
 using Photon.Pun;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class Doctor : MonoBehaviour // TODO: me livrar do mono
@@ -7,8 +6,8 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
     private RoomManager roomManager;
     private RoomUIController roomUIController;
 
-    [SerializeField] private AnimatorController combatDoctorAnimatorController;
-    [SerializeField] private AnimatorController gatheringDoctorAnimatorController;
+    [SerializeField] private RuntimeAnimatorController combatDoctorAnimatorController;
+    [SerializeField] private RuntimeAnimatorController gatheringDoctorAnimatorController;
 
     private PhotonView photonView;
     private Rigidbody doctorRigidbody;

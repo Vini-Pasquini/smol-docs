@@ -1,4 +1,3 @@
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour // TODO: me livrar do mono e talvez trocar pra scriptable
@@ -7,9 +6,9 @@ public class EnemyController : MonoBehaviour // TODO: me livrar do mono e talvez
     public EnemyType EnemyType { get { return this._enemyType; } }
 
     // ph
-    [SerializeField] private AnimatorController leukocyteAnimatorController;
-    [SerializeField] private AnimatorController pathogenVirusAnimatorController;
-    [SerializeField] private AnimatorController pathogenBacteriaAnimatorController;
+    [SerializeField] private RuntimeAnimatorController leukocyteAnimatorController;
+    [SerializeField] private RuntimeAnimatorController pathogenVirusAnimatorController;
+    [SerializeField] private RuntimeAnimatorController pathogenBacteriaAnimatorController;
 
     private SpriteRenderer spriteRenderer;
     private Animator animator;

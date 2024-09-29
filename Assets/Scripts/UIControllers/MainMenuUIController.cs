@@ -77,6 +77,12 @@ public class MainMenuUIController : MonoBehaviour
         GameLobbyCanvas.SetActive(true);
     }
 
+    // QuitButton
+    public void OnQuitButtonPressed()
+    {
+        Application.Quit();
+    }
+
     /* Lobby */
     // Back
     public void OnBackButtonPressed()
