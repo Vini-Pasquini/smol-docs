@@ -53,6 +53,8 @@ MonoBehaviour:
   - SendAmmoReloadRequest
   - RequestMapSeed
   - RequestMapSeedCallback
+  - DeployCavalo
+  - PickupCavalo
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

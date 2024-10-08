@@ -32,15 +32,17 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
     public float PathogenAmount { get { return this._pathogenAmount; } }
     private float _shrinkSerumAmount;
     public float ShrinkSerumAmount { get { return this._shrinkSerumAmount; } }
+
     // combat doc
     private float _morphineAmount; // kills leukocyte
     public float MorphineAmount { get { return this._morphineAmount; } }
     private float _vaccineAmount; // kills pathogen
     public float VaccineAmount { get { return this._vaccineAmount; } }
-    private bool _horseDeployed;
-    public bool HorseDeployed { get { return this._horseDeployed; } }
-    private float _horseCooldown;
-    public float HorseCooldown { get { return this._horseCooldown; } }
+    private bool _cavaloDeployed;
+    public bool CavaloDeployed { get { return this._cavaloDeployed; } }
+    private float _cavaloCooldownTimer;
+    public float CavaloCooldownTimer { get { return this._cavaloCooldownTimer; } }
+    private float _cavaloCooldown = 30f;
 
     private void Awake()
     {
@@ -59,11 +61,12 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         this._leukocyteAmount = 0f;
         this._pathogenAmount = 0f;
         this._shrinkSerumAmount = 0f;
+        
         // combat doc
         this._morphineAmount = 0f;
         this._vaccineAmount = 0f;
-        this._horseDeployed = false;
-        this._horseCooldown = 0f;
+        this._cavaloDeployed = false;
+        this._cavaloCooldownTimer = 0f;
 
         this.enabled = false; // until game starts
     }
@@ -127,8 +130,8 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         // combat doc
         this._morphineAmount = 0f;
         this._vaccineAmount = 0f;
-        this._horseDeployed = false;
-        this._horseCooldown = 0f;
+        this._cavaloDeployed = false;
+        this._cavaloCooldownTimer = 0f;
 
         this.roomUIController.UpdateResourcesDisplay();
     }
@@ -192,6 +195,30 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
                 this.roomUIController.UpdateResourcesDisplay();
             }
+        }
+    }
+
+    public void DeployCavaloInteraction()
+    {
+        Debug.Log("deploy cavalo interaction");
+        // if (this._cavaloCooldown > 0f) { return; } // mensagem dps, ou sla, vou ver ainda como mostrar pro player isso
+
+        if (!this._cavaloDeployed)
+        {
+            Debug.Log("nao ta deployado, entao vai deploiar");
+            roomManager.MyPlayerRPC.RPCDeployCavalo(this.transform.position);
+            this._cavaloDeployed = true;
+            //this._cavaloCooldownTimer = this._cavaloCooldown;
+            return;
+        }
+
+        if (this._cavaloDeployed)
+        {
+            Debug.Log("ta deployado, entao vai pegar dnv");
+            roomManager.MyPlayerRPC.RPCPickupCavalo();
+            this._cavaloDeployed = false;
+            //this._cavaloCooldownTimer = this._cavaloCooldown;
+            return;
         }
     }
 

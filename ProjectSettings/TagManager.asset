@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - EnemyPile
+  - Cavalo
   layers:
   - Default
   - TransparentFX

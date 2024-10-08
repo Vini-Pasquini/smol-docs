@@ -98,4 +98,32 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
         Debug.Log("PALYER 2 RECEBE A SEED");
         roomManager.SetMapSeed(seed);
     }
+
+    // combat
+
+    public void RPCDeployCavalo(Vector3 position)
+    {
+        Debug.Log("rpc deploy");
+        roomManager.MyPhotonView.RPC(nameof(DeployCavalo), RpcTarget.All, position);
+    }
+
+    [PunRPC] public void DeployCavalo(Vector3 position)
+    {
+        Debug.Log("punrpc deploy");
+        roomManager.SetDeployedCavalo(GameObject.Instantiate(Resources.Load<GameObject>("Cavalo"), position, Quaternion.identity));
+    }
+
+    public void RPCPickupCavalo()
+    {
+        Debug.Log("rpc pickup");
+        roomManager.MyPhotonView.RPC(nameof(PickupCavalo), RpcTarget.All);
+    }
+
+    [PunRPC] public void PickupCavalo()
+    {
+        Debug.Log("punrpc pickup");
+        roomManager.ResetDeployedCavalo();
+    }
+
+    // gathering
 }

@@ -37,6 +37,23 @@ public class RoomManager : MonoBehaviour
     private DoctorType _otherDoctorType;
     public DoctorType OtherDoctorType { get { return this._otherDoctorType; } }
 
+    private GameObject _deployedCavalo;
+    public GameObject DeployedCavalo { get { return this._deployedCavalo; } }
+
+    public void SetDeployedCavalo(GameObject cavalo)
+    {
+        // Debug.Assert(this._deployedCavalo == null);
+        Debug.Log("set cavalo");
+        this._deployedCavalo = cavalo;
+    }
+
+    public void ResetDeployedCavalo()
+    {
+        Debug.Log("reset cavalo");
+        GameObject.Destroy(this._deployedCavalo);
+        this._deployedCavalo = null;
+    }
+
     private bool _myPlayerReady;
     public bool MyPlayerReady { get { return this._myPlayerReady; } }
     private bool _otherPlayerReady;

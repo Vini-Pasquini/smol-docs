@@ -188,7 +188,8 @@ public class RoomUIController : MonoBehaviour
     /* Combat Doctor */
     public void OnCavaloButtonPress()
     {
-        roomManager.MyPhotonView.RPC("SendAmmoReloadRequest", RpcTarget.Others); // ph
+        Debug.Log("Click no botao");
+        roomManager.MyDoctor.DeployCavaloInteraction();
     }
 
     /* Gameover */
