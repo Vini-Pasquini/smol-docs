@@ -56,12 +56,13 @@ public class RoomUIController : MonoBehaviour
 
         this.loseOverlay = this.gameOverCanvas.transform.GetChild(0).gameObject;
         this.winOverlay = this.gameOverCanvas.transform.GetChild(1).gameObject;
+
+        this.playerOverlay = Resources.LoadAll<Sprite>("PlayerOverlay");
     }
 
     private void Start()
     {
         this.messageContainer.text = string.Empty;
-        this.playerOverlay = Resources.LoadAll<Sprite>("PlayerOverlay");
     }
 
     private void Update()
@@ -219,5 +220,11 @@ public class RoomUIController : MonoBehaviour
 
         this.animateGameover = false;
         this.animationTime = 0f;
+    }
+
+    // Stuff
+    public void OnQuitButtonPressed()
+    {
+        Application.Quit();
     }
 }

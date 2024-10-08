@@ -86,4 +86,16 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
     {
         roomUIController.UpdateWaitingForPlayersOverlay(isOnLobby);
     }
+
+    [PunRPC] public void RequestMapSeed()
+    {
+        Debug.Log("PALYER 1 DEVOLVE A SEED");
+        roomManager.MyPhotonView.RPC(nameof(RequestMapSeedCallback), RpcTarget.Others, roomManager.RequestMapSeed());
+    }
+
+    [PunRPC] public void RequestMapSeedCallback(int seed)
+    {
+        Debug.Log("PALYER 2 RECEBE A SEED");
+        roomManager.SetMapSeed(seed);
+    }
 }

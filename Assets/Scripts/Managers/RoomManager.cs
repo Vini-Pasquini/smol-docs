@@ -6,6 +6,7 @@ public class RoomManager : MonoBehaviour
     private RoomUIController roomUIController;
     private PhotonManager photonManager;
     private AudioManager audioManager;
+    private MapGenerator mapGenerator;
 
     [SerializeField] private Transform gatheringDoctorSpawn;
     [SerializeField] private Transform combatDoctorSpawn;
@@ -57,13 +58,14 @@ public class RoomManager : MonoBehaviour
 
     private void Awake()
     {
-        roomUIController = GameObject.Find("RoomUIController").GetComponent<RoomUIController>();
-        photonManager = GameObject.Find("PhotonManager").GetComponent<PhotonManager>();
-        audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
+        this.roomUIController = GameObject.Find("RoomUIController").GetComponent<RoomUIController>();
+        this.photonManager = GameObject.Find("PhotonManager").GetComponent<PhotonManager>();
+        this.audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
+        this.mapGenerator = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
 
-        audioManager.PlayAudioClip(AudioSample.Lobby);
+        this.audioManager.PlayAudioClip(AudioSample.Lobby);
 
-        photonManager.InitRoomStuff();
+        this.photonManager.InitRoomStuff();
     }
 
     private void Start()
@@ -81,7 +83,16 @@ public class RoomManager : MonoBehaviour
 
         this._enemyAmount = 0;
 
-        roomUIController.UpdateWaitingForPlayersOverlay();
+        this.roomUIController.UpdateWaitingForPlayersOverlay();
+
+        if (PhotonNetwork.PlayerList.Length < 2)
+        {
+            Debug.Log("PALYER 1 SETA A SEED");
+            this.mapGenerator.SetSeed(Random.Range(0, int.MaxValue));
+            return;
+        }
+        Debug.Log("PALYER 2 PEDE A SEED");
+        this._myPhotonView.RPC("RequestMapSeed", RpcTarget.Others);
     }
 
     private void Update()
@@ -90,10 +101,10 @@ public class RoomManager : MonoBehaviour
         switch (this._myDoctorType)
         {
             case DoctorType.GatheringDoctor:
-                LocalGatheringDoctorUpdate();
+                this.LocalGatheringDoctorUpdate();
                 break;
             case DoctorType.CombatDoctor:
-                LocalCombatDoctorUpdate();
+                this.LocalCombatDoctorUpdate();
                 break;
             default:
                 break;
@@ -140,6 +151,16 @@ public class RoomManager : MonoBehaviour
     }
 
     /* Other Stuff */
+    
+    public int RequestMapSeed()
+    {
+        return this.mapGenerator.Seed;
+    }
+
+    public void SetMapSeed(int seed)
+    {
+        this.mapGenerator.SetSeed(seed);
+    }
 
     public void UpdateDoctorType(DoctorType newDoctorType, bool otherDoctor = false)
     {
@@ -180,6 +201,8 @@ public class RoomManager : MonoBehaviour
 
     public void StartGame()
     {
+        this.mapGenerator.GenerateMap();
+
         this._runningLevel = true;
         
         foreach (GameObject currentPlayer in GameObject.FindGameObjectsWithTag("Player"))

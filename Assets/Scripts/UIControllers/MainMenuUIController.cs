@@ -18,7 +18,7 @@ public class MainMenuUIController : MonoBehaviour
     [Header("Room List")]
     [SerializeField] private GameObject roomPrefab;
     [SerializeField] private Transform roomContent;
-    List<GameObject> roomObjectList = new List<GameObject>();
+    private List<GameObject> roomObjectList = new List<GameObject>();
     // position
     private Vector3 gameTitleMinPosition;
     private Vector3 gameTitleMaxPosition;

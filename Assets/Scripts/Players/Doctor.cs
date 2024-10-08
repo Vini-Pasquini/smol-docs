@@ -79,20 +79,26 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
         if (!this.photonView.IsMine) return;
 
-        newVelocity = Vector3.zero;
+        // ph
+        Vector3 cameraPosition = this.transform.position;
+        cameraPosition.y += this.transform.localScale.y; // sim, especfico pra caramba
+        cameraPosition.z = -10f;
+        Camera.main.transform.position = cameraPosition;
 
-        newVelocity.x = movementSpeed * (Input.GetKey(KeyCode.A) ? -1f : (Input.GetKey(KeyCode.D) ? 1f : 0f));
-        newVelocity.y = movementSpeed * (Input.GetKey(KeyCode.W) ? 1f : (Input.GetKey(KeyCode.S) ? -1f : 0f));
+        this.newVelocity = Vector3.zero;
 
-        this.doctorRigidbody.velocity = newVelocity;
+        this.newVelocity.x = this.movementSpeed * (Input.GetKey(KeyCode.A) ? -1f : (Input.GetKey(KeyCode.D) ? 1f : 0f));
+        this.newVelocity.y = this.movementSpeed * (Input.GetKey(KeyCode.W) ? 1f : (Input.GetKey(KeyCode.S) ? -1f : 0f));
+
+        this.doctorRigidbody.velocity = this.newVelocity;
 
         switch (doctorType)
         {
             case DoctorType.GatheringDoctor:
-                GatheringDoctorUpdate();
+                this.GatheringDoctorUpdate();
                 break;
             case DoctorType.CombatDoctor:
-                CombatDoctorUpdate();
+                this.CombatDoctorUpdate();
                 break;
             default:
                 break;
@@ -124,7 +130,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         this._horseDeployed = false;
         this._horseCooldown = 0f;
 
-        roomUIController.UpdateResourcesDisplay();
+        this.roomUIController.UpdateResourcesDisplay();
     }
 
     public void DoctorReset()
@@ -140,13 +146,13 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
     public void GatheringDoctorUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out this.hitInfo))
         {
-            if (hitInfo.transform.CompareTag("EnemyPile") && (roomManager.MyPlayer.transform.position - hitInfo.transform.position).magnitude <= roomManager.InteractionReach)
+            if (this.hitInfo.transform.CompareTag("EnemyPile") && (this.roomManager.MyPlayer.transform.position - this.hitInfo.transform.position).magnitude <= this.roomManager.InteractionReach)
             {
-                Destroy(hitInfo.transform.gameObject);
+                Destroy(this.hitInfo.transform.gameObject);
 
-                switch (hitInfo.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite.name) // gambeta, mudar dps pelo EnemyType do scriptable object
+                switch (this.hitInfo.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite.name) // gambeta, mudar dps pelo EnemyType do scriptable object
                 {
                     case "phLeukocyteRemains":
                         this._leukocyteAmount++;
@@ -156,7 +162,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
                         break;
                 }
 
-                roomUIController.UpdateResourcesDisplay();
+                this.roomUIController.UpdateResourcesDisplay();
             }
         }
     }
@@ -165,14 +171,14 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
     public void CombatDoctorUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out this.hitInfo))
         {
-            if (hitInfo.transform.CompareTag("Enemy") && (roomManager.MyPlayer.transform.position - hitInfo.transform.position).magnitude <= roomManager.InteractionReach)
+            if (this.hitInfo.transform.CompareTag("Enemy") && (this.roomManager.MyPlayer.transform.position - this.hitInfo.transform.position).magnitude <= this.roomManager.InteractionReach)
             {
-                EnemyType enemyType = hitInfo.transform.GetComponent<EnemyController>().EnemyType;
-                roomManager.MyPlayerRPC.RPCKillEnemy(hitInfo.transform.position, enemyType);
-                Destroy(hitInfo.transform.gameObject);
-                roomManager.UpdateEnemyAmount(-1);
+                EnemyType enemyType = this.hitInfo.transform.GetComponent<EnemyController>().EnemyType;
+                this.roomManager.MyPlayerRPC.RPCKillEnemy(this.hitInfo.transform.position, enemyType);
+                GameObject.Destroy(this.hitInfo.transform.gameObject);
+                this.roomManager.UpdateEnemyAmount(-1);
 
                 switch (enemyType)
                 {
@@ -184,7 +190,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
                         break;
                 }
 
-                roomUIController.UpdateResourcesDisplay();
+                this.roomUIController.UpdateResourcesDisplay();
             }
         }
     }
