@@ -126,10 +126,11 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         // gathering doc
         this._leukocyteAmount = 0f;
         this._pathogenAmount = 0f;
-        this._shrinkSerumAmount = 0f;
+        this._shrinkSerumAmount = 75f;
+
         // combat doc
-        this._morphineAmount = 0f;
-        this._vaccineAmount = 0f;
+        this._morphineAmount = 100f;
+        this._vaccineAmount = 100f;
         this._cavaloDeployed = false;
         this._cavaloCooldownTimer = 0f;
 
@@ -158,16 +159,25 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
                 switch (this.hitInfo.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite.name) // gambeta, mudar dps pelo EnemyType do scriptable object
                 {
                     case "phLeukocyteRemains":
-                        this._leukocyteAmount++;
+                        this._leukocyteAmount += Random.Range(1f, 3f);
                         break;
                     case "phPathogenVirusRemains": case "phPathogenBacteriaRemains":
-                        this._pathogenAmount++;
+                        this._pathogenAmount += Random.Range(1f, 3f);
                         break;
                 }
 
                 this.roomUIController.UpdateResourcesDisplay();
             }
         }
+    }
+
+    public void RemoveGatheringResources(int leukocyteAmount = 0, int pathogenAmount = 0)
+    {
+        // verificar cap dps
+        this._leukocyteAmount -= leukocyteAmount;
+        this._pathogenAmount -= pathogenAmount;
+
+        this.roomUIController.UpdateResourcesDisplay();
     }
 
     /* Combat Doctor Stuff */
@@ -198,14 +208,21 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         }
     }
 
+    public void AddCombatResources(int morphineAmount, int vaccineAmount)
+    {
+        // verificar dps, talvez
+        this._morphineAmount += morphineAmount;
+        this._vaccineAmount += vaccineAmount;
+
+        this.roomUIController.UpdateResourcesDisplay();
+    }
+
     public void DeployCavaloInteraction()
     {
-        Debug.Log("deploy cavalo interaction");
         // if (this._cavaloCooldown > 0f) { return; } // mensagem dps, ou sla, vou ver ainda como mostrar pro player isso
 
         if (!this._cavaloDeployed)
         {
-            Debug.Log("nao ta deployado, entao vai deploiar");
             roomManager.MyPlayerRPC.RPCDeployCavalo(this.transform.position);
             this._cavaloDeployed = true;
             //this._cavaloCooldownTimer = this._cavaloCooldown;
@@ -214,7 +231,6 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
         if (this._cavaloDeployed)
         {
-            Debug.Log("ta deployado, entao vai pegar dnv");
             roomManager.MyPlayerRPC.RPCPickupCavalo();
             this._cavaloDeployed = false;
             //this._cavaloCooldownTimer = this._cavaloCooldown;

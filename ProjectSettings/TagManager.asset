@@ -7,6 +7,7 @@ TagManager:
   - Enemy
   - EnemyPile
   - Cavalo
+  - Capsule
   layers:
   - Default
   - TransparentFX
@@ -49,4 +50,7 @@ TagManager:
     locked: 0
   - name: Entity
     uniqueID: 4287331069
+    locked: 0
+  - name: Popup
+    uniqueID: 3595299077
     locked: 0

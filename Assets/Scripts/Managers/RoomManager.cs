@@ -42,14 +42,12 @@ public class RoomManager : MonoBehaviour
 
     public void SetDeployedCavalo(GameObject cavalo)
     {
-        // Debug.Assert(this._deployedCavalo == null);
-        Debug.Log("set cavalo");
+        Debug.Assert(this._deployedCavalo == null);
         this._deployedCavalo = cavalo;
     }
 
     public void ResetDeployedCavalo()
     {
-        Debug.Log("reset cavalo");
         GameObject.Destroy(this._deployedCavalo);
         this._deployedCavalo = null;
     }

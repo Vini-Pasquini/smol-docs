@@ -89,13 +89,11 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
 
     [PunRPC] public void RequestMapSeed()
     {
-        Debug.Log("PALYER 1 DEVOLVE A SEED");
         roomManager.MyPhotonView.RPC(nameof(RequestMapSeedCallback), RpcTarget.Others, roomManager.RequestMapSeed());
     }
 
     [PunRPC] public void RequestMapSeedCallback(int seed)
     {
-        Debug.Log("PALYER 2 RECEBE A SEED");
         roomManager.SetMapSeed(seed);
     }
 
@@ -103,27 +101,45 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
 
     public void RPCDeployCavalo(Vector3 position)
     {
-        Debug.Log("rpc deploy");
         roomManager.MyPhotonView.RPC(nameof(DeployCavalo), RpcTarget.All, position);
     }
 
     [PunRPC] public void DeployCavalo(Vector3 position)
     {
-        Debug.Log("punrpc deploy");
         roomManager.SetDeployedCavalo(GameObject.Instantiate(Resources.Load<GameObject>("Cavalo"), position, Quaternion.identity));
     }
 
     public void RPCPickupCavalo()
     {
-        Debug.Log("rpc pickup");
         roomManager.MyPhotonView.RPC(nameof(PickupCavalo), RpcTarget.All);
     }
 
     [PunRPC] public void PickupCavalo()
     {
-        Debug.Log("punrpc pickup");
         roomManager.ResetDeployedCavalo();
     }
 
     // gathering
+
+    // cavalo
+
+    public void RPCFillCavaloResources(int morphineAmount, int vaccineAmount)
+    {
+        roomManager.MyPhotonView.RPC(nameof(FillCavaloResources), RpcTarget.Others, morphineAmount, vaccineAmount);
+    }
+
+    [PunRPC] public void FillCavaloResources(int morphineAmount, int vaccineAmount)
+    {
+        roomManager.DeployedCavalo.GetComponent<CavaloController>().FillResources(morphineAmount, vaccineAmount);
+    }
+
+    public void RPCEmptyCavaloResources()
+    {
+        roomManager.MyPhotonView.RPC(nameof(EmptyCavaloResources), RpcTarget.All);
+    }
+
+    [PunRPC] public void EmptyCavaloResources()
+    {
+        roomManager.DeployedCavalo.GetComponent<CavaloController>().EmptyResources();
+    }
 }

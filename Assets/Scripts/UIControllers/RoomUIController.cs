@@ -188,7 +188,6 @@ public class RoomUIController : MonoBehaviour
     /* Combat Doctor */
     public void OnCavaloButtonPress()
     {
-        Debug.Log("Click no botao");
         roomManager.MyDoctor.DeployCavaloInteraction();
     }
 

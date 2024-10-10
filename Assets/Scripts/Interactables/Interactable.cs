@@ -1,9 +1,9 @@
-using System;
+using ParrelSync.NonCore;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CavaloController : MonoBehaviour
+public class Interactable : MonoBehaviour
 {
     private class InteractableDoctors
     {
@@ -57,24 +57,19 @@ public class CavaloController : MonoBehaviour
         }
     }
 
-    [SerializeField] private GameObject interactionPopup;
+    [SerializeField] protected GameObject interactionPopup;
+
+    protected RoomManager roomManager;
 
     private InteractableDoctors doctorsInRange;
 
-    private RoomManager roomManager;
-
-    private void Awake()
+    protected void InteractableInit()
     {
-        this.doctorsInRange = new InteractableDoctors();
         this.roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
+        this.doctorsInRange = new InteractableDoctors();
     }
 
-    private void Start()
-    {
-        this.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = (int)(this.transform.position.y * -100f);
-    }
-
-    private void Update()
+    protected void InteractionUpdate()
     {
         if (!this.interactionPopup.activeSelf) { return; }
 
@@ -92,33 +87,31 @@ public class CavaloController : MonoBehaviour
         }
     }
 
-    private void GatheringDoctorInteraction()
+    protected virtual void GatheringDoctorInteraction()
     {
-        Debug.Log("DEPOSITOU RESTOS");
+        Debug.Log("GATHERING DOC INTERACTION");
     }
 
-    private void CombatDoctorInteraction()
+    protected virtual void CombatDoctorInteraction()
     {
-        Debug.Log("RESGATOU VACINAS");
+        Debug.Log("COMBAT DOC INTERACTION");
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected void OnTriggerEnterCallback(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            bool flag = this.doctorsInRange.Add(other.GetComponent<Doctor>());
-            Debug.Log(flag ? "Doctor Added" : "Add Failed");
+            this.doctorsInRange.Add(other.GetComponent<Doctor>());
         }
 
         this.interactionPopup.SetActive(this.doctorsInRange.Has(this.roomManager.MyDoctor));
     }
 
-    private void OnTriggerExit(Collider other)
+    protected void OnTriggerExitCallback(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            bool flag = this.doctorsInRange.Remove(other.GetComponent<Doctor>());
-            Debug.Log(flag ? "Doctor Removed" : "Remove Failed");
+            this.doctorsInRange.Remove(other.GetComponent<Doctor>());
         }
 
         this.interactionPopup.SetActive(this.doctorsInRange.Has(this.roomManager.MyDoctor));
