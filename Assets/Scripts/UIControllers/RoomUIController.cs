@@ -67,6 +67,8 @@ public class RoomUIController : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Return)) { this.OnSendMessageButtonPress(); }
+
         if (animateGameover)
         {
             // defeat
@@ -128,9 +130,14 @@ public class RoomUIController : MonoBehaviour
 
     public void OnSendMessageButtonPress()
     {
-        this.roomManager.MyPlayerRPC.RPCSendMessage(messageInputField.text);
-        this.WriteToChat($"<color=#FF0080>eu</color>: {messageInputField.text}");
-        this.messageInputField.text = string.Empty;
+        if (messageInputField.text != string.Empty)
+        {
+            this.roomManager.MyPlayerRPC.RPCSendMessage(messageInputField.text);
+            this.WriteToChat($"<color=#FF0080>eu</color>: {messageInputField.text}");
+            this.messageInputField.text = string.Empty;
+        }
+
+        this.messageInputField.ActivateInputField();
     }
 
     public void OnRecieveMessageCallback(string newMessage)

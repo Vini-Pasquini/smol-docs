@@ -1,4 +1,5 @@
 using Photon.Pun;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class RoomManager : MonoBehaviour
@@ -16,6 +17,9 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private Transform[] enemySpawnList;
 
     [SerializeField] private Transform interactionArea;
+    private Transform outerInteractionArea;
+    private Transform innerInteractionArea;
+    private Vector3 rotationBuffer;
 
     RaycastHit hitInfo;
 
@@ -78,6 +82,9 @@ public class RoomManager : MonoBehaviour
         this.audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
         this.mapGenerator = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
 
+        outerInteractionArea = this.interactionArea.GetChild(0);
+        innerInteractionArea = this.interactionArea.GetChild(1);
+
         this.audioManager.PlayAudioClip(AudioSample.Lobby);
 
         this.photonManager.InitRoomStuff();
@@ -132,6 +139,16 @@ public class RoomManager : MonoBehaviour
         }
 
         this.interactionArea.position = this._myPlayer.transform.position;
+        
+        rotationBuffer = this.outerInteractionArea.rotation.eulerAngles;
+        rotationBuffer.z += Time.deltaTime * 5f;
+        this.outerInteractionArea.rotation = Quaternion.Euler(rotationBuffer);
+
+        rotationBuffer = this.innerInteractionArea.rotation.eulerAngles;
+        rotationBuffer.z -= Time.deltaTime * 5f;
+        this.innerInteractionArea.rotation = Quaternion.Euler(rotationBuffer);
+
+
     }
 
     /* Gathering Doctor Stuff */
