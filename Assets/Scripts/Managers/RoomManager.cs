@@ -103,7 +103,8 @@ public class RoomManager : MonoBehaviour
         if (PhotonNetwork.PlayerList.Length < 2)
         {
             Debug.Log("PALYER 1 SETA A SEED");
-            this.mapGenerator.SetSeed(Random.Range(0, int.MaxValue));
+            // this.mapGenerator.SetSeed(Random.Range(0, int.MaxValue));
+            this.mapGenerator.SetSeed(1);
             return;
         }
         Debug.Log("PALYER 2 PEDE A SEED");
@@ -278,12 +279,8 @@ public class RoomManager : MonoBehaviour
         this._enemyAmount += increment;
     }
 
-    public void ResetPlayerSize() // sla pq, mas só funciona na roomManager, gg
+    public void ResetPlayerSize()
     {
-
-        if ((this.MyPlayer.transform.position - this.OtherPlayer.transform.position).magnitude <= this._ampouleInteractionReach)
-        {
-            this._myPlayer.transform.localScale = Vector3.one;
-        }
+        this._myPlayer.transform.localScale = Vector3.one;
     }
 }

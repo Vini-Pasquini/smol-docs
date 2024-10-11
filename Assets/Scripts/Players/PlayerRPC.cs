@@ -63,7 +63,7 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
         }
     }
 
-    [PunRPC] public void AmmoReloadAnswer(float morphine, float vaccine)
+    [PunRPC] public void AmmoReloadAnswer(int morphine, int vaccine)
     {
         if (roomManager.MyDoctorType == DoctorType.CombatDoctor)
         {
@@ -71,7 +71,13 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
         }
     }
 
-    [PunRPC] public void ResetDoctorSize()
+    public void RPCDecreaseDoctorSize(int doses)
+    {
+
+        roomManager.MyPhotonView.RPC(nameof(DecreaseDoctorSize), RpcTarget.All, doses);
+    }
+
+    [PunRPC] public void DecreaseDoctorSize(int doses)
     {
         roomManager.ResetPlayerSize();
     }

@@ -170,19 +170,24 @@ public class RoomUIController : MonoBehaviour
         Doctor doc = this.roomManager.MyDoctor;
         if (this.roomManager.MyDoctorType == DoctorType.GatheringDoctor)
         {
-            this.resourcesDisplay.text = $"[RESTOS]\n Leucocitos: {doc.LeukocyteAmount} / ---\n Patogenos: {doc.PathogenAmount} / ---";
-            // this.resourcesDisplay.text = $"[RESTOS]\n Leucocitos: {doc.LeukocyteAmount} / ---\n Patogenos: {doc.PathogenAmount} / ---\n Soro de Encolhimento: {doc.ShrinkSerumAmount}";
+            this.resourcesDisplay.text = $"[RESTOS]\n Leucocitos: {doc.LeukocyteAmount} / ---\n Patogenos: {doc.PathogenAmount} / ---\n Soro de Encolhimento: {doc.ShrinkSerumAmount}";
             return;
         }
-        this.resourcesDisplay.text = $"[MUNICOES]\n Morfina: {doc.MorphineAmount} / ---\n Vacina: {doc.VaccineAmount} / ---";
-        // this.resourcesDisplay.text = $"[MUNICOES]\n Morfina: {doc.MorphineAmount} / ---\n Vacina: {doc.VaccineAmount} / ---\n C.A.V.A.L.O.: {doc.HorseCooldown}";
+        this.resourcesDisplay.text = $"[MUNICOES]\n Morfina: {doc.MorphineAmount} / ---\n Vacina: {doc.VaccineAmount} / ---\n C.A.V.A.L.O.: {(doc.CavaloDeployed ? "Deployed" : "Stored")}";
         return;
     }
 
     /* Gathering Doctor */
     public void OnAmpouleButtonPress()
     {
-        roomManager.MyPhotonView.RPC("ResetDoctorSize", RpcTarget.All);
+        if (roomManager.MyDoctor.ShrinkSerumAmount >= 15 && (roomManager.MyPlayer.transform.position - roomManager.OtherPlayer.transform.position).magnitude <= roomManager.AmpouleInteractionReach)
+        {
+            int doses = roomManager.MyDoctor.ShrinkSerumAmount / 15;
+            //roomManager.MyPlayerRPC.RPCDecreaseDoctorSize(doses);
+            //roomManager.MyDoctor.UpdateShrinkSerumAmount(-15 * doses);
+            roomManager.MyPlayerRPC.RPCDecreaseDoctorSize(1);
+            roomManager.MyDoctor.UpdateShrinkSerumAmount(-15);
+        }
     }
 
     /* Combat Doctor */

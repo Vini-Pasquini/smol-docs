@@ -26,21 +26,21 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
     RaycastHit hitInfo;
 
     // gathering doc
-    private float _leukocyteAmount;  // generates vaccine
-    public float LeukocyteAmount { get { return this._leukocyteAmount; } }
-    private float _pathogenAmount; // generates morphine
-    public float PathogenAmount { get { return this._pathogenAmount; } }
-    private float _shrinkSerumAmount;
-    public float ShrinkSerumAmount { get { return this._shrinkSerumAmount; } }
+    private int _leukocyteAmount = 0;  // generates vaccine
+    public int LeukocyteAmount { get { return this._leukocyteAmount; } }
+    private int _pathogenAmount = 0; // generates morphine
+    public int PathogenAmount { get { return this._pathogenAmount; } }
+    private int _shrinkSerumAmount = 75; // comes with a full charge
+    public int ShrinkSerumAmount { get { return this._shrinkSerumAmount; } }
 
     // combat doc
-    private float _morphineAmount; // kills leukocyte
-    public float MorphineAmount { get { return this._morphineAmount; } }
-    private float _vaccineAmount; // kills pathogen
-    public float VaccineAmount { get { return this._vaccineAmount; } }
-    private bool _cavaloDeployed;
+    private int _morphineAmount = 100; // kills leukocyte
+    public int MorphineAmount { get { return this._morphineAmount; } }
+    private int _vaccineAmount = 100; // kills pathogen
+    public int VaccineAmount { get { return this._vaccineAmount; } }
+    private bool _cavaloDeployed = false;
     public bool CavaloDeployed { get { return this._cavaloDeployed; } }
-    private float _cavaloCooldownTimer;
+    private float _cavaloCooldownTimer = 0f;
     public float CavaloCooldownTimer { get { return this._cavaloCooldownTimer; } }
     private float _cavaloCooldown = 30f;
 
@@ -56,17 +56,6 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         this.doctorRigidbody = this.GetComponent<Rigidbody>();
         this.doctorSpriteRenderer = this.transform.GetChild(0).GetComponent<SpriteRenderer>();
         this.doctorAnimator = this.transform.GetChild(0).GetComponent<Animator>();
-
-        // gathering doc
-        this._leukocyteAmount = 0f;
-        this._pathogenAmount = 0f;
-        this._shrinkSerumAmount = 0f;
-        
-        // combat doc
-        this._morphineAmount = 0f;
-        this._vaccineAmount = 0f;
-        this._cavaloDeployed = false;
-        this._cavaloCooldownTimer = 0f;
 
         this.enabled = false; // until game starts
     }
@@ -124,13 +113,13 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         this.transform.position = spawnPosition;
 
         // gathering doc
-        this._leukocyteAmount = 0f;
-        this._pathogenAmount = 0f;
-        this._shrinkSerumAmount = 75f;
+        this._leukocyteAmount = 0;
+        this._pathogenAmount = 0;
+        this._shrinkSerumAmount = 75;
 
         // combat doc
-        this._morphineAmount = 100f;
-        this._vaccineAmount = 100f;
+        this._morphineAmount = 100;
+        this._vaccineAmount = 100;
         this._cavaloDeployed = false;
         this._cavaloCooldownTimer = 0f;
 
@@ -159,10 +148,10 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
                 switch (this.hitInfo.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite.name) // gambeta, mudar dps pelo EnemyType do scriptable object
                 {
                     case "phLeukocyteRemains":
-                        this._leukocyteAmount += Random.Range(1f, 3f);
+                        this._leukocyteAmount += Random.Range(1, 4);
                         break;
                     case "phPathogenVirusRemains": case "phPathogenBacteriaRemains":
-                        this._pathogenAmount += Random.Range(1f, 3f);
+                        this._pathogenAmount += Random.Range(1, 4);
                         break;
                 }
 
@@ -176,6 +165,16 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         // verificar cap dps
         this._leukocyteAmount -= leukocyteAmount;
         this._pathogenAmount -= pathogenAmount;
+
+        this.roomUIController.UpdateResourcesDisplay();
+    }
+
+    public void UpdateShrinkSerumAmount(int increment)
+    {
+        this._shrinkSerumAmount += increment;
+
+        if (this._shrinkSerumAmount > 75) this._shrinkSerumAmount = 75;
+        if (this._shrinkSerumAmount < 0) this._shrinkSerumAmount = 0;
 
         this.roomUIController.UpdateResourcesDisplay();
     }
@@ -238,7 +237,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         }
     }
 
-    public void AddAmmo(float morphine = 0f, float vaccine = 0f)
+    public void AddAmmo(int morphine = 0, int vaccine = 0)
     {
         this._morphineAmount += morphine;
         this._vaccineAmount += vaccine;
@@ -248,7 +247,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
     public void ResetResources()
     {
-        this._leukocyteAmount = this._pathogenAmount = 0f;
+        this._leukocyteAmount = this._pathogenAmount = 0;
 
         roomUIController.UpdateResourcesDisplay();
     }
