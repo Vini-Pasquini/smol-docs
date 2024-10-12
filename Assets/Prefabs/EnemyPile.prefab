@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8892536170951530677}
   - component: {fileID: 5701602716080565146}
-  m_Layer: 0
+  m_Layer: 31
   m_Name: EnemyPile
   m_TagString: EnemyPile
   m_Icon: {fileID: 0}

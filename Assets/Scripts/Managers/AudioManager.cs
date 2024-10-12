@@ -46,23 +46,7 @@ public class AudioManager : MonoBehaviour
     {
         this.transform.position = Camera.main.transform.position;
 
-        if (!this._audioSource.isPlaying)
-        {
-            switch (this.nowPlaying)
-            {
-                case AudioSample.Defeat: case AudioSample.Victory: break;
-                case AudioSample.Level:
-                    this._audioSource.clip = (this.isIntense ? this.levelLoopBAudioClip : this.levelLoopAAudioClip);
-                    break;
-                case AudioSample.Boss:
-                    this._audioSource.clip = (this.isIntense ? this.bossLoopBAudioClip : this.bossLoopAAudioClip);
-                    break;
-                default:
-                    this._audioSource.loop = true;
-                    this._audioSource.Play();
-                    break;
-            }
-        }
+        this.CheckAudioLoop();
     }
 
     public void PlayAudioClip(AudioSample audioSample)
@@ -97,6 +81,25 @@ public class AudioManager : MonoBehaviour
                 break;
         }
         this.nowPlaying = audioSample;
+        this._audioSource.Play();
+    }
+
+    public void CheckAudioLoop()
+    {
+        if (this._audioSource.isPlaying) { return; }
+
+        switch (this.nowPlaying)
+        {
+            case AudioSample.Level:
+                this._audioSource.clip = (this.isIntense ? this.levelLoopBAudioClip : this.levelLoopAAudioClip);
+                this._audioSource.loop = true;
+                break;
+            case AudioSample.Boss:
+                this._audioSource.clip = (this.isIntense ? this.bossLoopBAudioClip : this.bossLoopAAudioClip);
+                this._audioSource.loop = true;
+                break;
+            default: return;
+        }
         this._audioSource.Play();
     }
 

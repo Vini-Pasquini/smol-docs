@@ -32,6 +32,8 @@ public class RoomUIController : MonoBehaviour
     [Header("Doctor Resources")]
     [SerializeField] private TextMeshProUGUI resourcesDisplay;
 
+    [SerializeField] private TextMeshProUGUI scoreDisplay;
+
     [Header("Gameover")]
     [SerializeField] private GameObject gameOverCanvas;
     [SerializeField] private RectTransform backToLobbyButtonRectTransform;
@@ -238,5 +240,10 @@ public class RoomUIController : MonoBehaviour
     public void OnQuitButtonPressed()
     {
         Application.Quit();
+    }
+
+    public void UpdateScoreDisplay()
+    {
+        this.scoreDisplay.text = $"SCORE: {this.roomManager.Score}";
     }
 }

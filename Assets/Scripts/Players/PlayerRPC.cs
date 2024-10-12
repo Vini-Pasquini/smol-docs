@@ -52,6 +52,16 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
         roomManager.SpawnEnemyPile(killPosition, (EnemyType)enemyType);
     }
 
+    public void RPCSendScoreUpdate(int score)
+    {
+        roomManager.MyPhotonView.RPC(nameof(SendScoreUpdate), RpcTarget.All, score);
+    }
+
+    [PunRPC] public void SendScoreUpdate(int score)
+    {
+        roomManager.UpdateScore(score);
+    }
+
     /* Solo RPC */
     
     [PunRPC] public void SendAmmoReloadRequest()

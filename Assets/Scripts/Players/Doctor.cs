@@ -21,9 +21,13 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
     private float scaleTimer = 1f;
     private float scaleFactor = .1f;
 
+    public int individualScore;
+
     DoctorType doctorType;
 
     RaycastHit hitInfo;
+
+    private int layerMask = (1 << 30) | (1 << 31);
 
     // gathering doc
     private int _leukocyteAmount = 0;  // generates vaccine
@@ -56,6 +60,8 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         this.doctorRigidbody = this.GetComponent<Rigidbody>();
         this.doctorSpriteRenderer = this.transform.GetChild(0).GetComponent<SpriteRenderer>();
         this.doctorAnimator = this.transform.GetChild(0).GetComponent<Animator>();
+
+        this.individualScore = 0;
 
         this.enabled = false; // until game starts
     }
@@ -103,7 +109,17 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         }
 
         this.scaleTimer -= Time.deltaTime;
+
+        this.time += Time.deltaTime;
+        if (this.time >= 1f && this.individualScore > 0)
+        {
+            this.roomManager.MyPlayerRPC.RPCSendScoreUpdate(this.individualScore);
+            this.individualScore = 0;
+            this.time = 0f;
+        }
     }
+
+    float time = 0;
 
     public void DoctorInit(DoctorType inType, Vector3 spawnPosition)
     {
@@ -139,7 +155,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
     public void GatheringDoctorUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out this.hitInfo))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out this.hitInfo, float.MaxValue, layerMask))
         {
             if (this.hitInfo.transform.CompareTag("EnemyPile") && (this.roomManager.MyPlayer.transform.position - this.hitInfo.transform.position).magnitude <= this.roomManager.InteractionReach)
             {
@@ -154,6 +170,8 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
                         this._pathogenAmount += Random.Range(1, 4);
                         break;
                 }
+
+                this.individualScore += 3;
 
                 this.roomUIController.UpdateResourcesDisplay();
             }
@@ -183,7 +201,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
     public void CombatDoctorUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out this.hitInfo))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out this.hitInfo, float.MaxValue, layerMask))
         {
             if (this.hitInfo.transform.CompareTag("Enemy") && (this.roomManager.MyPlayer.transform.position - this.hitInfo.transform.position).magnitude <= this.roomManager.InteractionReach)
             {
@@ -201,6 +219,8 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
                         this._vaccineAmount--;
                         break;
                 }
+
+                this.individualScore += 7;
 
                 this.roomUIController.UpdateResourcesDisplay();
             }

@@ -44,6 +44,9 @@ public class RoomManager : MonoBehaviour
     private GameObject _deployedCavalo;
     public GameObject DeployedCavalo { get { return this._deployedCavalo; } }
 
+    private int _score;
+    public int Score { get { return this._score; } }
+
     public void SetDeployedCavalo(GameObject cavalo)
     {
         Debug.Assert(this._deployedCavalo == null);
@@ -116,11 +119,14 @@ public class RoomManager : MonoBehaviour
         }
         Debug.Log("PALYER 2 PEDE A SEED");
         this._myPhotonView.RPC("RequestMapSeed", RpcTarget.Others);
+
+        this._score = 0;
     }
 
     private void Update()
     {
         if (!this._runningLevel) return;
+
         switch (this._myDoctorType)
         {
             case DoctorType.GatheringDoctor:
@@ -147,8 +153,6 @@ public class RoomManager : MonoBehaviour
         rotationBuffer = this.innerInteractionArea.rotation.eulerAngles;
         rotationBuffer.z -= Time.deltaTime * 5f;
         this.innerInteractionArea.rotation = Quaternion.Euler(rotationBuffer);
-
-
     }
 
     /* Gathering Doctor Stuff */
@@ -300,4 +304,25 @@ public class RoomManager : MonoBehaviour
     {
         this._myPlayer.transform.localScale = Vector3.one;
     }
+
+    public void UpdateScore(int increment)
+    {
+        this._score += increment;
+        this.roomUIController.UpdateScoreDisplay();
+    }
+
+    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    //{
+    //    if (stream.IsWriting)
+    //    {
+    //        stream.SendNext(this._score);
+    //        return;
+    //    }
+
+    //    if (stream.IsReading)
+    //    {
+    //        this._score = (int)stream.ReceiveNext();
+    //        return;
+    //    }
+    //}
 }
