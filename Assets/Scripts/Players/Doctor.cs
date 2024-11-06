@@ -245,6 +245,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
             roomManager.MyPlayerRPC.RPCDeployCavalo(this.transform.position);
             this._cavaloDeployed = true;
             //this._cavaloCooldownTimer = this._cavaloCooldown;
+            this.roomUIController.UpdateResourcesDisplay();
             return;
         }
 
@@ -253,8 +254,10 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
             roomManager.MyPlayerRPC.RPCPickupCavalo();
             this._cavaloDeployed = false;
             //this._cavaloCooldownTimer = this._cavaloCooldown;
+            this.roomUIController.UpdateResourcesDisplay();
             return;
         }
+
     }
 
     public void AddAmmo(int morphine = 0, int vaccine = 0)

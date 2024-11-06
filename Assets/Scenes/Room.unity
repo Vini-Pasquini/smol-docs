@@ -6700,8 +6700,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d8d75189407394ca08867b6e8e2202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 100
-  height: 100
+  width: 200
+  height: 140
   fillPercentage: 45
 --- !u!4 &1848585578
 Transform:
@@ -7550,7 +7550,6 @@ MonoBehaviour:
   - {fileID: 966375679}
   - {fileID: 1649097615}
   interactionArea: {fileID: 313971597}
-  totalScore: 0
 --- !u!4 &2043243278
 Transform:
   m_ObjectHideFlags: 0

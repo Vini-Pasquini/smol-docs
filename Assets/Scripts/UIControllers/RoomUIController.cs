@@ -202,7 +202,8 @@ public class RoomUIController : MonoBehaviour
     /* Combat Doctor */
     public void OnCavaloButtonPress()
     {
-        roomManager.MyDoctor.DeployCavaloInteraction();
+        if (this.roomManager.MyDoctor.CavaloDeployed && (this.roomManager.MyPlayer.transform.position - this.roomManager.DeployedCavalo.transform.position).magnitude > roomManager.AmpouleInteractionReach) { return; }
+        this.roomManager.MyDoctor.DeployCavaloInteraction();
     }
 
     /* Gameover */

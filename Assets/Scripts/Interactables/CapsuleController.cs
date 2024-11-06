@@ -17,7 +17,8 @@ public class CapsuleController : Interactable
 
     private void Start()
     {
-        this.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = (int)(this.transform.position.y * -100f);
+        this.transform.GetChild(0).rotation = Quaternion.Euler(new Vector3(0f, 0f, Random.Range(-15f, 15f)));
+        this.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = (int)(this.transform.position.y * -100f);
     }
 
     private void Update()

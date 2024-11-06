@@ -85,6 +85,7 @@ public class MapGenerator : MonoBehaviour // mudar tudo isso dps
                     this.mapWallData[xIndex, yIndex] = 1;
                     continue;
                 }
+
                 this.mapWallData[xIndex, yIndex] = (Random.Range(0f, 100f) < this.fillPercentage) ? 1 : 0;
             }
         }
@@ -96,20 +97,49 @@ public class MapGenerator : MonoBehaviour // mudar tudo isso dps
         int boarderSize = 5;
         int[,] boardedMap = new int[this.width + boarderSize * 2, this.height + boarderSize * 2];
 
-        for (int xIndex = 0; xIndex < boardedMap.GetLength(0); xIndex++)
+        int boardedMapXIndex = boardedMap.GetLength(0);
+        int boardedMapYIndex = boardedMap.GetLength(1);
+
+        for (int xIndex = 0; xIndex < boardedMapXIndex; xIndex++)
         {
-            for (int yIndex = 0; yIndex < boardedMap.GetLength(1); yIndex++)
+            for (int yIndex = 0; yIndex < boardedMapYIndex; yIndex++)
             {
+                if ((xIndex > (boardedMapXIndex / 2) - 10 && xIndex < (boardedMapXIndex / 2) + 10) && (yIndex > (boardedMapYIndex / 2) - 7 && yIndex < (boardedMapYIndex / 2) + 7))
+                {
+                    boardedMap[xIndex, yIndex] = 0;
+                    continue;
+                }
+
                 if (xIndex >= boarderSize && xIndex < this.width + boarderSize && yIndex >= boarderSize && yIndex < this.height + boarderSize)
                 {
                     boardedMap[xIndex, yIndex] = this.mapWallData[xIndex - boarderSize, yIndex - boarderSize];
                     continue;
                 }
+
                 boardedMap[xIndex, yIndex] = 1;
             }
         }
 
         // MeshGen
         this.meshGenerator.GenerateMesh(boardedMap, 1);
+    }
+
+    private void OnDrawGizmos()
+    {
+        for (int xIndex = 0; xIndex < this.width; xIndex++)
+        {
+            for (int yIndex = 0; yIndex < this.height; yIndex++)
+            {
+                Gizmos.color = this.mapWallData[xIndex, yIndex] == 1 ? Color.red : Color.green;
+
+
+                if ((xIndex > (this.width / 2) - 10 && xIndex < (this.width / 2) + 10) && (yIndex > (this.height / 2) - 10 && yIndex < (this.height / 2) + 10))
+                {
+                    Gizmos.color = Color.yellow;
+                }
+
+                Gizmos.DrawCube(new Vector3(xIndex - (this.width / 2), yIndex - (this.height / 2), 0f), Vector3.one * .5f);
+            }
+        }
     }
 }
