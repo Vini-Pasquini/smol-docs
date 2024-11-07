@@ -8,13 +8,13 @@ public class RoomManager : MonoBehaviour
     private PhotonManager photonManager;
     private AudioManager audioManager;
     private MapGenerator mapGenerator;
+    private EnemyManager enemyManager;
 
     [SerializeField] private Transform gatheringDoctorSpawn;
     [SerializeField] private Transform combatDoctorSpawn;
 
     [SerializeField] private GameObject enemyPilePrefab;
-    [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private Transform[] enemySpawnList;
+    [SerializeField] private Transform[] enemySpawnList; // só vou deixar aki pra nao ter que refazer na unity aaa
 
     [SerializeField] private Transform interactionArea;
     private Transform outerInteractionArea;
@@ -84,6 +84,7 @@ public class RoomManager : MonoBehaviour
         this.photonManager = GameObject.Find("PhotonManager").GetComponent<PhotonManager>();
         this.audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
         this.mapGenerator = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
+        this.enemyManager = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
 
         outerInteractionArea = this.interactionArea.GetChild(0);
         innerInteractionArea = this.interactionArea.GetChild(1);
@@ -105,8 +106,6 @@ public class RoomManager : MonoBehaviour
 
         this._myDoctorType = DoctorType.None;
         this._otherDoctorType = DoctorType.None;
-
-        this._enemyAmount = 0;
 
         this.roomUIController.UpdateWaitingForPlayersOverlay();
 
@@ -177,13 +176,10 @@ public class RoomManager : MonoBehaviour
     public void LocalCombatDoctorUpdate()
     {
         enemySpawnTimer -= Time.deltaTime;
-        if (enemySpawnTimer <= 0 && this._enemyAmount < 25)
+        if (enemySpawnTimer <= 0 && this.enemyManager.CanSpawn)
         {
-            int spawnIndex = Random.Range(0, enemySpawnList.Length);
-            GameObject newEnemy = GameObject.Instantiate(enemyPrefab, enemySpawnList[spawnIndex].position, Quaternion.identity);
-            newEnemy.GetComponent<EnemyController>().EnemyInit(this.enemySpawnList, spawnIndex);
+            this.enemyManager.SpawnEnemy(this.enemySpawnList); // TODO: tirar essa lista
             enemySpawnTimer = enemySpawnInterval;
-            this._enemyAmount++;
         }
     }
 
@@ -267,7 +263,7 @@ public class RoomManager : MonoBehaviour
         foreach (Doctor currentPlayer in GameObject.FindObjectsByType<Doctor>(FindObjectsInactive.Include, FindObjectsSortMode.None)) { currentPlayer.enabled = false; }
 
         // ph
-        foreach (EnemyController currentEnemy in GameObject.FindObjectsByType<EnemyController>(FindObjectsInactive.Include, FindObjectsSortMode.None)) { currentEnemy.enabled = false; }
+        // foreach (EnemyController currentEnemy in GameObject.FindObjectsByType<EnemyController>(FindObjectsInactive.Include, FindObjectsSortMode.None)) { currentEnemy.enabled = false; }
 
         this._runningLevel = false;
         this.audioManager.PlayAudioClip((hasWon ? AudioSample.Victory : AudioSample.Defeat));
@@ -282,7 +278,7 @@ public class RoomManager : MonoBehaviour
 
         // ph
         foreach (GameObject currentEnemy in GameObject.FindGameObjectsWithTag("Enemy")) { GameObject.Destroy(currentEnemy); }
-        this._enemyAmount = 0;
+        this._enemyAmount = 0; // TODO: MUDAR; MUDAR; MUDAR
 
         // ph
         foreach (GameObject currentPile in GameObject.FindGameObjectsWithTag("EnemyPile")) { GameObject.Destroy(currentPile); }

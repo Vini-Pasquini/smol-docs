@@ -5,6 +5,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 {
     private RoomManager roomManager;
     private RoomUIController roomUIController;
+    private EnemyManager enemyManager;
 
     [SerializeField] private RuntimeAnimatorController combatDoctorAnimatorController;
     [SerializeField] private RuntimeAnimatorController gatheringDoctorAnimatorController;
@@ -52,6 +53,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
     {
         this.roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
         this.roomUIController = GameObject.Find("RoomUIController").GetComponent<RoomUIController>();
+        this.enemyManager = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
     }
 
     private void Start()
@@ -205,10 +207,11 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         {
             if (this.hitInfo.transform.CompareTag("Enemy") && (this.roomManager.MyPlayer.transform.position - this.hitInfo.transform.position).magnitude <= this.roomManager.InteractionReach)
             {
-                EnemyType enemyType = this.hitInfo.transform.GetComponent<EnemyController>().EnemyType;
-                this.roomManager.MyPlayerRPC.RPCKillEnemy(this.hitInfo.transform.position, enemyType);
-                GameObject.Destroy(this.hitInfo.transform.gameObject);
-                this.roomManager.UpdateEnemyAmount(-1);
+                Vector3 killPosition = this.hitInfo.transform.position;
+
+                EnemyType enemyType = this.enemyManager.KillEnemy(this.hitInfo.transform.gameObject);
+
+                this.roomManager.MyPlayerRPC.RPCKillEnemy(killPosition, enemyType);
 
                 switch (enemyType)
                 {

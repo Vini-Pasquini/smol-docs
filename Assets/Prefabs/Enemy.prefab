@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7729793706521757396}
-  - component: {fileID: 7463613122562389491}
   - component: {fileID: -3004508485704391854}
   m_Layer: 31
   m_Name: Enemy
@@ -34,21 +33,6 @@ Transform:
   - {fileID: 8181923185046286992}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7463613122562389491
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4456665218049926964}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 226e57046dddf8642898b6390a66e462, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  leukocyteAnimatorController: {fileID: 9100000, guid: c9eace1d5165d3b4cb817e4966c69a32, type: 2}
-  pathogenVirusAnimatorController: {fileID: 9100000, guid: 342b61bf2ea6a1d45ab32ff49286fb37, type: 2}
-  pathogenBacteriaAnimatorController: {fileID: 9100000, guid: 74e691b6dcb644c41b498c47094ecc3d, type: 2}
 --- !u!65 &-3004508485704391854
 BoxCollider:
   m_ObjectHideFlags: 0

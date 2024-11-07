@@ -1381,6 +1381,54 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 76e9d050c492b7d4f93db83c9006bd8a, type: 3}
+--- !u!1 &260786793
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 260786795}
+  - component: {fileID: 260786794}
+  m_Layer: 0
+  m_Name: EnemyManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &260786794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 260786793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60dc8f48d597294ca8b40c821a124df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leukocyteAnimatorController: {fileID: 9100000, guid: c9eace1d5165d3b4cb817e4966c69a32, type: 2}
+  pathogenVirusAnimatorController: {fileID: 9100000, guid: 342b61bf2ea6a1d45ab32ff49286fb37, type: 2}
+  pathogenBacteriaAnimatorController: {fileID: 9100000, guid: 74e691b6dcb644c41b498c47094ecc3d, type: 2}
+  enemyPrefab: {fileID: 4456665218049926964, guid: be22bdd65e6222243b79c79af49d3b47, type: 3}
+--- !u!4 &260786795
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 260786793}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.6046834, y: 1.3712581, z: -0.20596138}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &277464661
 GameObject:
   m_ObjectHideFlags: 0
@@ -7529,7 +7577,6 @@ MonoBehaviour:
   gatheringDoctorSpawn: {fileID: 1591021008}
   combatDoctorSpawn: {fileID: 1700635959}
   enemyPilePrefab: {fileID: 2328738590658459760, guid: edcc3f603280cb745922b9467c610b8d, type: 3}
-  enemyPrefab: {fileID: 4456665218049926964, guid: be22bdd65e6222243b79c79af49d3b47, type: 3}
   enemySpawnList:
   - {fileID: 324591657}
   - {fileID: 592189584}
@@ -8119,6 +8166,7 @@ SceneRoots:
   - {fileID: 1241163309}
   - {fileID: 1266981692}
   - {fileID: 2043243278}
+  - {fileID: 260786795}
   - {fileID: 385517890}
   - {fileID: 1848585578}
   - {fileID: 1010104758}

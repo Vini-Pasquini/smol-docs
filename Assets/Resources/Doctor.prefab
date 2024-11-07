@@ -102,6 +102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   combatDoctorAnimatorController: {fileID: 9100000, guid: e9457d81195776642be270a0b882d328, type: 2}
   gatheringDoctorAnimatorController: {fileID: 9100000, guid: b95ad34db808e3949af49fe5f4700ba8, type: 2}
+  individualScore: 0
 --- !u!114 &-8526645753542181584
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,7 +287,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1286636104023571173}
   - component: {fileID: 4922082927138251815}
-  - component: {fileID: 5443156104116058327}
   m_Layer: 10
   m_Name: InteractionTrigger
   m_TagString: Untagged
@@ -330,15 +330,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2, z: 1}
   m_Center: {x: 0.5, y: 1, z: 0}
---- !u!114 &5443156104116058327
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8040865146681352200}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 536ecbdfd53ed7a4797637171e5fe630, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
