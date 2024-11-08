@@ -56,7 +56,7 @@ public class AudioManager : MonoBehaviour
             case AudioSample.None:
                 break;
             case AudioSample.Menu:
-                this._audioSource.clip = (Random.Range(0f, 1f) <= 0.5f ? this.menuPleasantAudioClip : this.menuOminousAudioClip);
+                this._audioSource.clip = (Random.Range(0f, 1f) <= 0.15f ? this.menuPleasantAudioClip : this.menuOminousAudioClip);
                 this._audioSource.loop = true;
                 break;
             case AudioSample.Lobby:

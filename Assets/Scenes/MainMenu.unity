@@ -1417,7 +1417,7 @@ MonoBehaviour:
   menuPleasantAudioClip: {fileID: 8300000, guid: 256168576a069614688dfe97fa1b4e67, type: 3}
   lobbyAudioClip: {fileID: 8300000, guid: d43c18d78b68b724aa4555abf4a77f70, type: 3}
   levelAudioClip: {fileID: 8300000, guid: 5ef6575ecef76474688ee7ae75a157f8, type: 3}
-  levelLoopAAudioClip: {fileID: 8300000, guid: 256168576a069614688dfe97fa1b4e67, type: 3}
+  levelLoopAAudioClip: {fileID: 8300000, guid: 0b369ed6c9e77fa46abad1147e52ae6f, type: 3}
   levelLoopBAudioClip: {fileID: 8300000, guid: 8f6d9285dc5496f4991a5cfc036dd557, type: 3}
   bossAudioClip: {fileID: 8300000, guid: 317295824d2baa749950905535cbb9f2, type: 3}
   bossLoopAAudioClip: {fileID: 8300000, guid: 1985bb693aa6f6c4b8efebd7a0b6ac82, type: 3}
