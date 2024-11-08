@@ -18,6 +18,8 @@ public class EnemyManager : MonoBehaviour
     private bool _canSpawn = true;
     public bool CanSpawn { get { return this._canSpawn; } }
 
+    private bool skipUpdate = false;
+
     private void Awake()
     {
         this.enemies = new Enemy[this._enemyCapacity];
@@ -25,6 +27,8 @@ public class EnemyManager : MonoBehaviour
 
     private void Update()
     {
+        if (skipUpdate) return;
+
         for (int i = 0; i < this._enemyCount; i++)
         {
             this.enemies[i].CustomUpdate();
@@ -77,5 +81,22 @@ public class EnemyManager : MonoBehaviour
         this._canSpawn = this._enemyCount < this._enemyCapacity;
 
         return result;
+    }
+
+    public void StopEnemies()
+    {
+        this.skipUpdate = true;
+    }
+
+    public void NukeEnemies()
+    {
+        this.skipUpdate = false;
+        for (int i = 0; i < this._enemyCount; i++)
+        {
+            GameObject.Destroy(this.enemies[i].EnemyObject);
+            this.enemies[i] = null;
+        }
+
+        this._enemyCount = 0;
     }
 }

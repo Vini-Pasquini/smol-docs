@@ -262,8 +262,7 @@ public class RoomManager : MonoBehaviour
         // ph
         foreach (Doctor currentPlayer in GameObject.FindObjectsByType<Doctor>(FindObjectsInactive.Include, FindObjectsSortMode.None)) { currentPlayer.enabled = false; }
 
-        // ph
-        // foreach (EnemyController currentEnemy in GameObject.FindObjectsByType<EnemyController>(FindObjectsInactive.Include, FindObjectsSortMode.None)) { currentEnemy.enabled = false; }
+        this.enemyManager.StopEnemies();
 
         this._runningLevel = false;
         this.audioManager.PlayAudioClip((hasWon ? AudioSample.Victory : AudioSample.Defeat));
@@ -276,9 +275,7 @@ public class RoomManager : MonoBehaviour
         // ph
         foreach (Doctor currentPlayer in GameObject.FindObjectsByType<Doctor>(FindObjectsInactive.Include, FindObjectsSortMode.None)) { currentPlayer.DoctorReset(); }
 
-        // ph
-        foreach (GameObject currentEnemy in GameObject.FindGameObjectsWithTag("Enemy")) { GameObject.Destroy(currentEnemy); }
-        this._enemyAmount = 0; // TODO: MUDAR; MUDAR; MUDAR
+        this.enemyManager.NukeEnemies();
 
         // ph
         foreach (GameObject currentPile in GameObject.FindGameObjectsWithTag("EnemyPile")) { GameObject.Destroy(currentPile); }
@@ -290,11 +287,6 @@ public class RoomManager : MonoBehaviour
     }
 
     /* Running Game Stuff */
-
-    public void UpdateEnemyAmount(int increment)
-    {
-        this._enemyAmount += increment;
-    }
 
     public void ResetPlayerSize()
     {

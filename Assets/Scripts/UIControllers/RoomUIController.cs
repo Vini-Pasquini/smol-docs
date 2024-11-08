@@ -117,8 +117,8 @@ public class RoomUIController : MonoBehaviour
         this.gatheringDocPlayerOverlay.sprite = this.playerOverlay[(myDoctorType == DoctorType.GatheringDoctor && otherDoctorType == DoctorType.GatheringDoctor ? 3 : (myDoctorType != DoctorType.GatheringDoctor && otherDoctorType == DoctorType.GatheringDoctor ? 2 : (myDoctorType == DoctorType.GatheringDoctor && otherDoctorType != DoctorType.GatheringDoctor ? 1 : 0)))];
         this.combatDocPlayerOverlay.sprite = this.playerOverlay[(myDoctorType == DoctorType.CombatDoctor && otherDoctorType == DoctorType.CombatDoctor ? 3 : (myDoctorType != DoctorType.CombatDoctor && otherDoctorType == DoctorType.CombatDoctor ? 2 : (myDoctorType == DoctorType.CombatDoctor && otherDoctorType != DoctorType.CombatDoctor ? 1 : 0)))];
 
-        this.gatheringDocSprite.color = new Color(this.gatheringDocSprite.color.r, this.gatheringDocSprite.color.g, this.gatheringDocSprite.color.b, (myDoctorType != DoctorType.GatheringDoctor && otherDoctorType != DoctorType.GatheringDoctor ? .125f : 1f));
-        this.combatDocSprite.color = new Color(this.combatDocSprite.color.r, this.combatDocSprite.color.g, this.combatDocSprite.color.b, (myDoctorType != DoctorType.CombatDoctor && otherDoctorType != DoctorType.CombatDoctor ? .125f : 1f));
+        this.gatheringDocSprite.color = new Color(this.gatheringDocSprite.color.r, this.gatheringDocSprite.color.g, this.gatheringDocSprite.color.b, (myDoctorType != DoctorType.GatheringDoctor && otherDoctorType != DoctorType.GatheringDoctor ? .4f : 1f));
+        this.combatDocSprite.color = new Color(this.combatDocSprite.color.r, this.combatDocSprite.color.g, this.combatDocSprite.color.b, (myDoctorType != DoctorType.CombatDoctor && otherDoctorType != DoctorType.CombatDoctor ? .4f : 1f));
 
         this.readyButton.interactable = myDoctorType != DoctorType.None && otherDoctorType != DoctorType.None && myDoctorType != otherDoctorType;
         this.roomManager.ResetPlayerReady();
