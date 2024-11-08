@@ -12,9 +12,12 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
     private PhotonView photonView;
     private Rigidbody doctorRigidbody;
+
     private SpriteRenderer doctorSpriteRenderer;
     private Animator doctorAnimator;
 
+    private AudioSource audioSource;
+    
     private float movementSpeed = 3f;
     private Vector3 newVelocity = Vector3.zero;
 
@@ -60,8 +63,11 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
     {
         this.photonView = this.GetComponent<PhotonView>();
         this.doctorRigidbody = this.GetComponent<Rigidbody>();
+
         this.doctorSpriteRenderer = this.transform.GetChild(0).GetComponent<SpriteRenderer>();
         this.doctorAnimator = this.transform.GetChild(0).GetComponent<Animator>();
+
+        this.audioSource = this.transform.GetChild(2).GetComponent<AudioSource>();
 
         this.individualScore = 0;
 
@@ -74,8 +80,16 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         this.doctorSpriteRenderer.flipX = this.doctorRigidbody.velocity.x < 0f ? true : (this.doctorRigidbody.velocity.x > 0f ? false : this.doctorSpriteRenderer.flipX);
 
         // ph
-        if (this.doctorRigidbody.velocity.magnitude > .1f) { this.doctorAnimator.Play("RUN"); }
-        else { this.doctorAnimator.Play("IDLE"); }
+        if (this.doctorRigidbody.velocity.magnitude > .1f)
+        {
+            this.doctorAnimator.Play("RUN");
+            this.audioSource.UnPause();
+        }
+        else
+        {
+            this.doctorAnimator.Play("IDLE");
+            this.audioSource.Pause();
+        }
 
         if (!this.photonView.IsMine) return;
 
