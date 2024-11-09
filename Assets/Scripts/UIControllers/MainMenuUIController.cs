@@ -66,7 +66,9 @@ public class MainMenuUIController : MonoBehaviour
     // PlayButton
     public void OnPlayButtonPressed()
     {
+#if UNITY_EDITOR
         Debug.Log("[MainMenuController] Connecting to Server...");
+#endif
         this.SetStatusMassege("Conectando ao Server...");
         PhotonNetwork.ConnectUsingSettings();
     }
@@ -87,7 +89,9 @@ public class MainMenuUIController : MonoBehaviour
     // Back
     public void OnBackButtonPressed()
     {
+#if UNITY_EDITOR
         Debug.Log("[MainMenuController] Disconnecting from Lobby...");
+#endif
         this.SetStatusMassege("Desconectando do Lobby...");
         PhotonNetwork.LeaveLobby();
     }
@@ -101,7 +105,9 @@ public class MainMenuUIController : MonoBehaviour
     // Create Room
     public void OnCreateRoomButtonPressed()
     {
+#if UNITY_EDITOR
         Debug.Log($"[MainMenuController] Creating \"{PhotonNetwork.NickName}\" Room...");
+#endif
         this.SetStatusMassege($"Criando Sala \"{PhotonNetwork.NickName}\"...");
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 2;
@@ -116,7 +122,9 @@ public class MainMenuUIController : MonoBehaviour
     // Join Room
     public void OnJoinRoomButtonPressed(TextMeshProUGUI roomName)
     {
+#if UNITY_EDITOR
         Debug.Log($"[MainMenuController] Joining \"{roomName.text}\" Room...");
+#endif
         this.SetStatusMassege($"Entrando na Sala \"{roomName.text}\"...");
         PhotonNetwork.JoinRoom(roomName.text);
     }

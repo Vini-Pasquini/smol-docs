@@ -28,22 +28,12 @@ public class CapsuleController : Interactable
 
     protected override void GatheringDoctorInteraction()
     {
-        Debug.Log("COLETOU SORO");
-
         int difference = 75 - roomManager.MyDoctor.ShrinkSerumAmount;
         if (difference > this.serumAmount) difference = this.serumAmount;
         roomManager.MyDoctor.UpdateShrinkSerumAmount(difference);
         this.serumAmount -= difference;
 
         phAmountDisplay.text = this.serumAmount.ToString();
-
-        base.GatheringDoctorInteraction();
-    }
-
-    protected override void CombatDoctorInteraction()
-    {
-        Debug.Log("TU NAO PEGA SORO");
-        base.CombatDoctorInteraction();
     }
 
     private void OnTriggerEnter(Collider other)

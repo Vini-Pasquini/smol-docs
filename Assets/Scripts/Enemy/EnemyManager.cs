@@ -39,8 +39,6 @@ public class EnemyManager : MonoBehaviour
     {
         if (this._enemyCount >= this._enemyCapacity) { return; }
 
-        Debug.Log("Spawn");
-
         EnemyType newType = (EnemyType)Random.Range(1, (int)EnemyType._count);
         RuntimeAnimatorController runtimeAnimatorController = (newType == EnemyType.Leukocyte ? this.leukocyteAnimatorController : (newType == EnemyType.PathogenVirus ? this.pathogenVirusAnimatorController : this.pathogenBacteriaAnimatorController));
 

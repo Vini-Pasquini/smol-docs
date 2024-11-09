@@ -75,11 +75,11 @@ public class RoomUIController : MonoBehaviour
         {
             // defeat
             this.bufferColor = this.lossOverlayImage.color;
-            this.bufferColor.a =  Mathf.Lerp(0f, .75f, this.animationTime);
+            this.bufferColor.a = Mathf.Lerp(0f, .75f, this.animationTime);
             this.lossOverlayImage.color = this.bufferColor;
 
             this.bufferColor = this.lossOverlayText.color;
-            this.bufferColor.a =  Mathf.Lerp(0f, 1f, this.animationTime);
+            this.bufferColor.a = Mathf.Lerp(0f, 1f, this.animationTime);
             this.lossOverlayText.color = this.bufferColor;
 
             // victory
@@ -92,6 +92,8 @@ public class RoomUIController : MonoBehaviour
             this.animationTime += Time.deltaTime;
             if (this.animationTime > 1f) { this.animationTime = 1f; }
         }
+
+        this.UpdateTriggerAnimation();
     }
 
     /* Doctor Selection */
@@ -189,6 +191,8 @@ public class RoomUIController : MonoBehaviour
     /* Gathering Doctor */
     public void OnAmpouleButtonPress()
     {
+        this.PlayTriggerAnim();
+
         if (roomManager.MyDoctor.ShrinkSerumAmount >= 15 && (roomManager.MyPlayer.transform.position - roomManager.OtherPlayer.transform.position).magnitude <= roomManager.AmpouleInteractionReach)
         {
             int doses = roomManager.MyDoctor.ShrinkSerumAmount / 15;
@@ -198,6 +202,74 @@ public class RoomUIController : MonoBehaviour
             roomManager.MyDoctor.UpdateShrinkSerumAmount(-15);
         }
     }
+
+    // Ampoule Animation Stuff
+
+    [SerializeField] private Image[] serumBars;
+    [SerializeField] private RectTransform ampouleLever;
+
+    private Color darkGreen = new Color(0, .5f, .25f);
+
+    public void UpdateAmpoule()
+    {
+        int amount = this.roomManager.MyDoctor.ShrinkSerumAmount;
+
+        for (int index = 0; index < 5; index++)
+        {
+            serumBars[index].fillAmount = index < amount / 15 ? 1f : (index > amount / 15 ? 0f : (amount % 15 == 0 ? 0f : amount / ((index + 1) * 15f) ));
+            serumBars[index].color = (index < (int)(amount / 15) ? Color.green : this.darkGreen);
+        }
+
+        this.ampouleLever.localPosition = new Vector3(Mathf.Lerp(-900, -1200f, (amount / 75f)), 264f, 0f);
+    }
+
+    [SerializeField] private RectTransform ampouleTrigger;
+
+    private bool isPlayingTrigger = false;
+    private bool multipleTriggerInput = false;
+    private bool isResettingTrigger = false;
+
+    private float triggerTime = 0f;
+
+    public void PlayTriggerAnim()
+    {
+        this.multipleTriggerInput = this.isPlayingTrigger;
+        this.isPlayingTrigger = true;
+    }
+
+    private void UpdateTriggerAnimation()
+    {
+        if (!this.isPlayingTrigger) return;
+
+        if (this.multipleTriggerInput)
+        {
+            this.triggerTime = 0f;
+            this.isResettingTrigger = false;
+            this.multipleTriggerInput = false;
+        }
+
+        this.triggerTime += Time.deltaTime * (this.isResettingTrigger ? -7 : 10);
+
+        if (this.triggerTime <= 0f && this.isResettingTrigger)
+        {
+            this.triggerTime = 0f;
+            this.isPlayingTrigger = false;
+            this.isResettingTrigger = false;
+            return;
+        }
+
+        if (this.triggerTime >= 1f)
+        {
+            this.triggerTime = 1f;
+            this.isResettingTrigger = true;
+            return;
+        }
+
+        this.ampouleTrigger.localPosition = new Vector3(Mathf.Lerp(-990f, -995f, this.triggerTime), Mathf.Lerp(370f, 390f, this.triggerTime), 0f);
+        this.ampouleTrigger.localRotation = Quaternion.Euler(0f, 0f, Mathf.Lerp(0f, -15f, this.triggerTime));
+    }
+
+    // Backpack Animation Stuff
 
     /* Combat Doctor */
     public void OnCavaloButtonPress()
@@ -247,4 +319,13 @@ public class RoomUIController : MonoBehaviour
     {
         this.scoreDisplay.text = $"SCORE: {this.roomManager.Score}";
     }
+
+
+    // TESTE AAAAAA
+
+    public void UpdateResourcesBackpack()
+    {
+        //
+    }
+
 }

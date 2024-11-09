@@ -111,12 +111,11 @@ public class RoomManager : MonoBehaviour
 
         if (PhotonNetwork.PlayerList.Length < 2)
         {
-            Debug.Log("PALYER 1 SETA A SEED");
             // this.mapGenerator.SetSeed(Random.Range(0, int.MaxValue));
             this.mapGenerator.SetSeed(1);
             return;
         }
-        Debug.Log("PALYER 2 PEDE A SEED");
+
         this._myPhotonView.RPC("RequestMapSeed", RpcTarget.Others);
 
         this._score = 0;
@@ -164,7 +163,6 @@ public class RoomManager : MonoBehaviour
 
     public void SpawnEnemyPile(Vector3 spawPosition, EnemyType enemyType)
     {
-        // TODO: guardar o tipo no scriptable dps que eu mudar
         GameObject.Instantiate(enemyPilePrefab, spawPosition, Quaternion.identity).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"ph{enemyType}Remains");
     }
 
@@ -298,19 +296,4 @@ public class RoomManager : MonoBehaviour
         this._score += increment;
         this.roomUIController.UpdateScoreDisplay();
     }
-
-    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    //{
-    //    if (stream.IsWriting)
-    //    {
-    //        stream.SendNext(this._score);
-    //        return;
-    //    }
-
-    //    if (stream.IsReading)
-    //    {
-    //        this._score = (int)stream.ReceiveNext();
-    //        return;
-    //    }
-    //}
 }

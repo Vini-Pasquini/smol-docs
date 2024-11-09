@@ -89,12 +89,12 @@ public class Interactable : MonoBehaviour
 
     protected virtual void GatheringDoctorInteraction()
     {
-        Debug.Log("GATHERING DOC INTERACTION");
+
     }
 
     protected virtual void CombatDoctorInteraction()
     {
-        Debug.Log("COMBAT DOC INTERACTION");
+
     }
 
     protected void OnTriggerEnterCallback(Collider other)

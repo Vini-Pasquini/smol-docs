@@ -123,23 +123,4 @@ public class MapGenerator : MonoBehaviour // mudar tudo isso dps
         // MeshGen
         this.meshGenerator.GenerateMesh(boardedMap, 1);
     }
-
-    //private void OnDrawGizmos()
-    //{
-    //    for (int xIndex = 0; xIndex < this.width; xIndex++)
-    //    {
-    //        for (int yIndex = 0; yIndex < this.height; yIndex++)
-    //        {
-    //            Gizmos.color = this.mapWallData[xIndex, yIndex] == 1 ? Color.red : Color.green;
-
-
-    //            if ((xIndex > (this.width / 2) - 10 && xIndex < (this.width / 2) + 10) && (yIndex > (this.height / 2) - 10 && yIndex < (this.height / 2) + 10))
-    //            {
-    //                Gizmos.color = Color.yellow;
-    //            }
-
-    //            Gizmos.DrawCube(new Vector3(xIndex - (this.width / 2), yIndex - (this.height / 2), 0f), Vector3.one * .5f);
-    //        }
-    //    }
-    //}
 }

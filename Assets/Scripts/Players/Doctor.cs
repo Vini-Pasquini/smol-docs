@@ -147,7 +147,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         // gathering doc
         this._leukocyteAmount = 0;
         this._pathogenAmount = 0;
-        this._shrinkSerumAmount = 75;
+        this._shrinkSerumAmount = 15;
 
         // combat doc
         this._morphineAmount = 100;
@@ -155,7 +155,9 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         this._cavaloDeployed = false;
         this._cavaloCooldownTimer = 0f;
 
-        this.roomUIController.UpdateResourcesDisplay();
+        this.roomUIController.UpdateResourcesDisplay(); // TODO: remover
+
+        this.roomUIController.UpdateAmpoule();
     }
 
     public void DoctorReset()
@@ -210,7 +212,9 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         if (this._shrinkSerumAmount > 75) this._shrinkSerumAmount = 75;
         if (this._shrinkSerumAmount < 0) this._shrinkSerumAmount = 0;
 
-        this.roomUIController.UpdateResourcesDisplay();
+        this.roomUIController.UpdateResourcesDisplay(); // TODO: remover
+
+        this.roomUIController.UpdateAmpoule();
     }
 
     /* Combat Doctor Stuff */
