@@ -1,5 +1,6 @@
 using Photon.Pun;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -94,6 +95,7 @@ public class RoomUIController : MonoBehaviour
         }
 
         this.UpdateTriggerAnimation();
+        this.UpdateCavaloAnimation();
     }
 
     /* Doctor Selection */
@@ -181,10 +183,10 @@ public class RoomUIController : MonoBehaviour
         Doctor doc = this.roomManager.MyDoctor;
         if (this.roomManager.MyDoctorType == DoctorType.GatheringDoctor)
         {
-            this.resourcesDisplay.text = $"[RESTOS]\n Leucocitos: {doc.LeukocyteAmount} / ---\n Patogenos: {doc.PathogenAmount} / ---\n Soro de Encolhimento: {doc.ShrinkSerumAmount}";
+            this.resourcesDisplay.text = $"[RESTOS]\n Leucocitos: {doc.LeukocyteAmount} / {doc.LeukocyteCap}\n Patogenos: {doc.PathogenAmount} / {doc.PathogenCap}\n Soro de Encolhimento: {doc.ShrinkSerumAmount}";
             return;
         }
-        this.resourcesDisplay.text = $"[MUNICOES]\n Morfina: {doc.MorphineAmount} / ---\n Vacina: {doc.VaccineAmount} / ---\n C.A.V.A.L.O.: {(doc.CavaloDeployed ? "Deployed" : "Stored")}";
+        this.resourcesDisplay.text = $"[MUNICOES]\n Morfina: {doc.MorphineAmount} / {doc.MorphineCap}\n Vacina: {doc.VaccineAmount} / {doc.VaccineCap}\n C.A.V.A.L.O.: {(doc.CavaloDeployed ? "No Chao" : "No Inventario")}";
         return;
     }
 
@@ -271,6 +273,17 @@ public class RoomUIController : MonoBehaviour
 
     // Backpack Animation Stuff
 
+    [SerializeField] private Image pathogenBar;
+    [SerializeField] private Image leukocyteBar;
+
+    public void UpdateResourcesBackpack()
+    {
+        Doctor doc = this.roomManager.MyDoctor;
+
+        pathogenBar.fillAmount = doc.PathogenAmount / doc.PathogenCap;
+        leukocyteBar.fillAmount = doc.LeukocyteAmount / doc.LeukocyteCap;
+    }
+
     /* Combat Doctor */
     public void OnCavaloButtonPress()
     {
@@ -323,9 +336,59 @@ public class RoomUIController : MonoBehaviour
 
     // TESTE AAAAAA
 
-    public void UpdateResourcesBackpack()
+    [SerializeField] private RectTransform morphineSpring;
+    [SerializeField] private RectTransform vaccineSpring;
+
+    private Vector3 morphineSpringPositionBuffer;
+    private Vector3 vaccineSpringPositionBuffer;
+
+    public void UpdateAmmoBackpack()
     {
-        //
+        Doctor doc = this.roomManager.MyDoctor;
+
+        morphineSpringPositionBuffer = morphineSpring.localPosition;
+        morphineSpringPositionBuffer.y = Mathf.Lerp(-75f, 75f, (doc.MorphineAmount / doc.MorphineCap));
+        morphineSpring.localPosition = morphineSpringPositionBuffer;
+
+        vaccineSpringPositionBuffer = vaccineSpring.localPosition;
+        vaccineSpringPositionBuffer.y = Mathf.Lerp(-75f, 75f, (doc.VaccineAmount / doc.VaccineCap));
+        vaccineSpring.localPosition = vaccineSpringPositionBuffer;
     }
 
+    [SerializeField] private Image cavaloSprite;
+
+    [SerializeField] private Sprite cavaloOffSprite;
+    [SerializeField] private Sprite[] cavaloOnSprite;
+
+    private bool playCavaloAnimation = false;
+    private int cavaloAnimationFrame = 0;
+    private float cavaloAnimationFrameChangeRate = .25f; // in seconds
+    private float cavaloAnimationTime = 1f;
+
+    public void PlayCavaloAnimation()
+    {
+        this.playCavaloAnimation = this.roomManager.MyDoctor.CavaloDeployed;
+        if (!this.playCavaloAnimation)
+        {
+            cavaloSprite.sprite = cavaloOffSprite;
+            this.cavaloAnimationFrame = 0;
+            this.cavaloAnimationTime = 1f;
+        }
+    }
+
+    private void UpdateCavaloAnimation()
+    {
+        if (!this.playCavaloAnimation) return;
+
+        this.cavaloAnimationTime += Time.deltaTime / this.cavaloAnimationFrameChangeRate;
+
+        if (this.cavaloAnimationTime >= 1f)
+        {
+            this.cavaloAnimationTime = 0f;
+            this.cavaloSprite.sprite = this.cavaloOnSprite[this.cavaloAnimationFrame];
+
+            this.cavaloAnimationFrame++;
+            if (this.cavaloAnimationFrame >= this.cavaloOnSprite.Length) { this.cavaloAnimationFrame = 0; }
+        }
+    }
 }
