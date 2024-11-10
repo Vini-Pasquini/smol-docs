@@ -43,7 +43,7 @@ public class Enemy
 
         this.startPosition = this.endPosition = this.transform.position;
 
-        this.endPosition = this.FindDestination();
+        this.SetDestination(); // eh aki o problema, 100% de certeza
 
         this.hasBeenInit = true;
     }
@@ -58,32 +58,30 @@ public class Enemy
         transform.position = Vector3.Lerp(startPosition, endPosition, timer);
         if (timer >= 1f)
         {
-            this.endPosition = this.FindDestination();
+            this.SetDestination();
             timer = 0f;
         }
     }
 
-    private Vector3 FindDestination()
+    private void SetDestination()
     {
         this.startPosition = this.endPosition;
-
-        int iterations = 0;
-
+        
         Vector3 randomDirection = Vector3.zero;
 
-        do
+        for (int maxIterations = 0; maxIterations < 10; maxIterations++) // tenta 10 vezes, se nao achar parede em 10 tentativas, só por deus
         {
-            iterations++;
-
             randomDirection = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0);
-            if (Physics.Raycast(this.transform.position, randomDirection, out hitInfo, int.MaxValue))
+            if (Physics.Raycast(this.transform.position, randomDirection, out hitInfo, 500))
             {
                 if (!hitInfo.collider.CompareTag("Wall")) continue;
 
-                return hitInfo.point;
+                this.endPosition = hitInfo.point;
+                return;
             }
-        } while (this.startPosition == this.endPosition || iterations < 50);
+        }
 
-        return this.startPosition + Vector3.down;
+        this.endPosition = this.startPosition + randomDirection;
+        return;
     }
 }

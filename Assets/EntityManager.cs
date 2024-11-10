@@ -12,7 +12,7 @@ public class EntityManager : MonoBehaviour
     private float enemySpawnInterval = .5f;
     private float enemySpawnTimer = 5f;
 
-    private float capsuleSpawnInterval = 5f;
+    private float capsuleSpawnInterval = 30f;
     private float capsuleSpawnTimer = 5f;
 
     private int capsuleCount = 0;
@@ -38,10 +38,14 @@ public class EntityManager : MonoBehaviour
     {
         enemySpawnTimer -= Time.deltaTime;
 
-        if (this._roomManager.MyDoctorType != DoctorType.CombatDoctor || enemySpawnTimer > 0 || !this._enemyManager.CanSpawn) { return; }
+        if (this._roomManager.MyDoctorType != DoctorType.CombatDoctor || enemySpawnTimer > 0 || !this._enemyManager.CanSpawn)
+        {
+            enemySpawnTimer = enemySpawnInterval;
+            return;
+        }
         
         randomDirection = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0);
-        if (Physics.Raycast(this.transform.position, randomDirection, out hitInfo, int.MaxValue))
+        if (Physics.Raycast(this.transform.position, randomDirection, out hitInfo, 500))
         {
             if (!hitInfo.collider.CompareTag("Wall")) return;
 
@@ -57,11 +61,11 @@ public class EntityManager : MonoBehaviour
         if (this._roomManager.MyDoctorType != DoctorType.GatheringDoctor || capsuleSpawnTimer > 0 || this.capsuleCount >= 7) { return; }
 
         randomDirection = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0);
-        if (Physics.Raycast(this.transform.position, randomDirection, out hitInfo, int.MaxValue))
+        if (Physics.Raycast(this.transform.position, randomDirection, out hitInfo, 500))
         {
             if (!hitInfo.collider.CompareTag("Wall")) return;
 
-            if (Physics.Raycast(this.transform.position, hitInfo.normal, out secondHitInfo, int.MaxValue))
+            if (Physics.Raycast(this.transform.position, hitInfo.normal, out secondHitInfo, 500))
             {
                 if (!secondHitInfo.collider.CompareTag("Wall")) return;
 
