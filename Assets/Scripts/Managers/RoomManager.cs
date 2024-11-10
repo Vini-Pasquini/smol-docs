@@ -9,6 +9,7 @@ public class RoomManager : MonoBehaviour
     private AudioManager audioManager;
     private MapGenerator mapGenerator;
     private EnemyManager enemyManager;
+    private EntityManager entityManager;
 
     [SerializeField] private Transform gatheringDoctorSpawn;
     [SerializeField] private Transform combatDoctorSpawn;
@@ -85,6 +86,7 @@ public class RoomManager : MonoBehaviour
         this.audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
         this.mapGenerator = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
         this.enemyManager = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
+        this.entityManager = GameObject.Find("EntityManager").GetComponent<EntityManager>();
 
         outerInteractionArea = this.interactionArea.GetChild(0);
         innerInteractionArea = this.interactionArea.GetChild(1);
@@ -111,8 +113,7 @@ public class RoomManager : MonoBehaviour
 
         if (PhotonNetwork.PlayerList.Length < 2)
         {
-            // this.mapGenerator.SetSeed(Random.Range(0, int.MaxValue));
-            this.mapGenerator.SetSeed(1);
+            this.mapGenerator.SetSeed(Random.Range(0, int.MaxValue));
             return;
         }
 
@@ -168,17 +169,17 @@ public class RoomManager : MonoBehaviour
 
     /* Combat Doctor Stuff */
 
-    private float enemySpawnInterval = .5f;
-    private float enemySpawnTimer = 5;
+    //private float enemySpawnInterval = .5f;
+    //private float enemySpawnTimer = 5;
 
     public void LocalCombatDoctorUpdate()
     {
-        enemySpawnTimer -= Time.deltaTime;
-        if (enemySpawnTimer <= 0 && this.enemyManager.CanSpawn)
-        {
-            this.enemyManager.SpawnEnemy(this.enemySpawnList); // TODO: tirar essa lista
-            enemySpawnTimer = enemySpawnInterval;
-        }
+        //enemySpawnTimer -= Time.deltaTime;
+        //if (enemySpawnTimer <= 0 && this.enemyManager.CanSpawn)
+        //{
+        //    this.enemyManager.SpawnEnemy(this.enemySpawnList); // TODO: tirar essa lista
+        //    enemySpawnTimer = enemySpawnInterval;
+        //}
     }
 
     /* Other Stuff */
@@ -274,6 +275,8 @@ public class RoomManager : MonoBehaviour
         foreach (Doctor currentPlayer in GameObject.FindObjectsByType<Doctor>(FindObjectsInactive.Include, FindObjectsSortMode.None)) { currentPlayer.DoctorReset(); }
 
         this.enemyManager.NukeEnemies();
+
+        this.entityManager.NukeCapsules();
 
         // ph
         foreach (GameObject currentPile in GameObject.FindGameObjectsWithTag("EnemyPile")) { GameObject.Destroy(currentPile); }

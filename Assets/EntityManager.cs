@@ -6,9 +6,79 @@ public class EntityManager : MonoBehaviour
 {
     [SerializeField] private GameObject capsulePrefab;
 
+    private RoomManager _roomManager;
+    private EnemyManager _enemyManager;
+
+    private float enemySpawnInterval = .5f;
+    private float enemySpawnTimer = 5f;
+
+    private float capsuleSpawnInterval = 5f;
+    private float capsuleSpawnTimer = 5f;
+
+    private int capsuleCount = 0;
+
+    RaycastHit hitInfo;
+    RaycastHit secondHitInfo;
+
+    Vector3 randomDirection = Vector3.zero;
+
+    private void Awake()
+    {
+        this._roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
+        this._enemyManager = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
+    }
+
     private void Update()
     {
-        // esse treco aki vai spawnar as capsula e os inimigu, eh isso
-        // mas primeiro as capsula
+        this.TrySpawnEnemy();
+        this.TrySpawnCapsule();
+    }
+
+    private void TrySpawnEnemy()
+    {
+        enemySpawnTimer -= Time.deltaTime;
+
+        if (this._roomManager.MyDoctorType != DoctorType.CombatDoctor || enemySpawnTimer > 0 || !this._enemyManager.CanSpawn) { return; }
+        
+        randomDirection = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0);
+        if (Physics.Raycast(this.transform.position, randomDirection, out hitInfo, int.MaxValue))
+        {
+            if (!hitInfo.collider.CompareTag("Wall")) return;
+
+            this._enemyManager.SpawnEnemy(hitInfo.point + (this.transform.position - hitInfo.point).normalized);
+            enemySpawnTimer = enemySpawnInterval;
+        }
+    }
+
+    private void TrySpawnCapsule()
+    {
+        capsuleSpawnTimer -= Time.deltaTime;
+
+        if (this._roomManager.MyDoctorType != DoctorType.GatheringDoctor || capsuleSpawnTimer > 0 || this.capsuleCount >= 7) { return; }
+
+        randomDirection = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0);
+        if (Physics.Raycast(this.transform.position, randomDirection, out hitInfo, int.MaxValue))
+        {
+            if (!hitInfo.collider.CompareTag("Wall")) return;
+
+            if (Physics.Raycast(this.transform.position, hitInfo.normal, out secondHitInfo, int.MaxValue))
+            {
+                if (!secondHitInfo.collider.CompareTag("Wall")) return;
+
+                Vector3 hitVector = secondHitInfo.point - hitInfo.point;
+
+                GameObject.Instantiate(capsulePrefab, hitVector.normalized * (hitVector.magnitude / 2f), Quaternion.identity);
+
+                this.capsuleCount++;
+
+                capsuleSpawnTimer = capsuleSpawnInterval;
+            }
+        }
+    }
+
+    public void NukeCapsules()
+    {
+        // ph
+        foreach (GameObject currentCapsule in GameObject.FindGameObjectsWithTag("Capsule")) { GameObject.Destroy(currentCapsule); }
     }
 }

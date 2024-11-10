@@ -12,7 +12,7 @@ public class EnemyManager : MonoBehaviour
 
     private Enemy[] enemies;
 
-    private int _enemyCapacity = 25;
+    private int _enemyCapacity = 50;
     private int _enemyCount = 0;
 
     private bool _canSpawn = true;
@@ -35,21 +35,19 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    public void SpawnEnemy(Transform[] enemySpawnList)
+    public void SpawnEnemy(Vector3 spawnPosition)
     {
         if (this._enemyCount >= this._enemyCapacity) { return; }
-
+        
         EnemyType newType = (EnemyType)Random.Range(1, (int)EnemyType._count);
         RuntimeAnimatorController runtimeAnimatorController = (newType == EnemyType.Leukocyte ? this.leukocyteAnimatorController : (newType == EnemyType.PathogenVirus ? this.pathogenVirusAnimatorController : this.pathogenBacteriaAnimatorController));
 
-        int spawnIndex = Random.Range(0, enemySpawnList.Length);
-        GameObject newEnemyObject = GameObject.Instantiate(enemyPrefab, enemySpawnList[spawnIndex].position, Quaternion.identity);
+        GameObject newEnemyObject = GameObject.Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
 
         this.enemies[this._enemyCount] = new Enemy(newEnemyObject);
-        this.enemies[this._enemyCount].Init(newType, runtimeAnimatorController, enemySpawnList, spawnIndex);
+        this.enemies[this._enemyCount].Init(newType, runtimeAnimatorController);
 
         this._enemyCount++;
-
         this._canSpawn = this._enemyCount < this._enemyCapacity;
     }
 
@@ -75,7 +73,6 @@ public class EnemyManager : MonoBehaviour
         }
 
         this.enemies[--this._enemyCount] = null;
-
         this._canSpawn = this._enemyCount < this._enemyCapacity;
 
         return result;
@@ -96,5 +93,6 @@ public class EnemyManager : MonoBehaviour
         }
 
         this._enemyCount = 0;
+        this._canSpawn = this._enemyCount < this._enemyCapacity;
     }
 }

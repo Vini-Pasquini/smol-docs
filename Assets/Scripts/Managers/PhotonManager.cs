@@ -96,7 +96,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
 #if UNITY_EDITOR
-        Debug.Log($"[PhotonManager] Player {otherPlayer.NickName} Joined Room");
+        Debug.Log($"[PhotonManager] Player {otherPlayer.NickName} Left Room");
 #endif
         roomUIController.WriteToChat($"<color=#ffa0a0>Jogador {otherPlayer.NickName} Deixou a Sala </color>");
         roomUIController.UpdateWaitingForPlayersOverlay();

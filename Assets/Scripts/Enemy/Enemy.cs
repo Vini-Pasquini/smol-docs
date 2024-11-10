@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class Enemy
@@ -15,15 +16,13 @@ public class Enemy
     private SpriteRenderer spriteRenderer;
     private Animator animator;
 
-    private Vector3[] positionList;
     private Vector3 startPosition;
     private Vector3 endPosition;
     private float timer;
 
     private bool hasBeenInit = false;
 
-    private int startPositionIndex;
-    private int endPositionIndex;
+    RaycastHit hitInfo;
 
     public Enemy(GameObject enemyObject)
     {
@@ -35,24 +34,16 @@ public class Enemy
         this.animator = this.transform.GetChild(0).GetComponent<Animator>();
     }
 
-    public void Init(EnemyType enemyType, RuntimeAnimatorController runtimeAnimatorController, Transform[] positionList, int initialPositionIndex)
+    public void Init(EnemyType enemyType, RuntimeAnimatorController runtimeAnimatorController)
     {
         this.timer = 0f;
 
         this._enemyType = enemyType;
         this.animator.runtimeAnimatorController = runtimeAnimatorController;
 
-        this.positionList = new Vector3[positionList.Length + 1];
-        for (int index = 0; index < positionList.Length; index++)
-        {
-            this.positionList[index] = positionList[index].position;
-        }
-        this.positionList[positionList.Length] = Vector3.zero;
+        this.startPosition = this.endPosition = this.transform.position;
 
-        this.startPositionIndex = initialPositionIndex;
-        this.startPosition = this.positionList[this.startPositionIndex];
-        this.endPositionIndex = positionList.Length;
-        this.endPosition = this.positionList[this.endPositionIndex];
+        this.endPosition = this.FindDestination();
 
         this.hasBeenInit = true;
     }
@@ -63,22 +54,36 @@ public class Enemy
 
         if (!hasBeenInit) return;
 
-        // placeholder movement
         timer += Time.deltaTime / (endPosition - startPosition).magnitude;
         transform.position = Vector3.Lerp(startPosition, endPosition, timer);
         if (timer >= 1f)
         {
-            this.startPositionIndex = this.endPositionIndex;
-            this.startPosition = this.endPosition;
-
-            do
-            {
-                this.endPositionIndex = Random.Range(0, this.positionList.Length);
-            } while (this.endPositionIndex == this.startPositionIndex);
-
-            this.endPosition = this.positionList[this.endPositionIndex];
-
+            this.endPosition = this.FindDestination();
             timer = 0f;
         }
+    }
+
+    private Vector3 FindDestination()
+    {
+        this.startPosition = this.endPosition;
+
+        int iterations = 0;
+
+        Vector3 randomDirection = Vector3.zero;
+
+        do
+        {
+            iterations++;
+
+            randomDirection = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0);
+            if (Physics.Raycast(this.transform.position, randomDirection, out hitInfo, int.MaxValue))
+            {
+                if (!hitInfo.collider.CompareTag("Wall")) continue;
+
+                return hitInfo.point;
+            }
+        } while (this.startPosition == this.endPosition || iterations < 50);
+
+        return this.startPosition + Vector3.down;
     }
 }
