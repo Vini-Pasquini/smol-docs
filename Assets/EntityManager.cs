@@ -38,11 +38,7 @@ public class EntityManager : MonoBehaviour
     {
         enemySpawnTimer -= Time.deltaTime;
 
-        if (this._roomManager.MyDoctorType != DoctorType.CombatDoctor || enemySpawnTimer > 0 || !this._enemyManager.CanSpawn)
-        {
-            enemySpawnTimer = enemySpawnInterval;
-            return;
-        }
+        if (this._roomManager.MyDoctorType != DoctorType.CombatDoctor || enemySpawnTimer > 0 || !this._enemyManager.CanSpawn) { return; }
         
         randomDirection = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0);
         if (Physics.Raycast(this.transform.position, randomDirection, out hitInfo, 500))
