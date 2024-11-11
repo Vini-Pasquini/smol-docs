@@ -250,6 +250,8 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         {
             if (this.hitInfo.transform.CompareTag("Enemy") && (this.roomManager.MyPlayer.transform.position - this.hitInfo.transform.position).magnitude <= this.roomManager.InteractionReach)
             {
+                if (this.roomManager.MyDoctor.MorphineAmount <= 0 || this.roomManager.MyDoctor.VaccineAmount <= 0) return; // placeholder sacana
+
                 Vector3 killPosition = this.hitInfo.transform.position;
 
                 EnemyType enemyType = this.enemyManager.KillEnemy(this.hitInfo.transform.gameObject);
