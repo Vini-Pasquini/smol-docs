@@ -23,7 +23,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
 
     private const float scaleCooldown = 2f;
     private float scaleTimer = 1f;
-    private float scaleFactor = .1f;
+    private float scaleFactor = .03f;
 
     public int individualScore;
 

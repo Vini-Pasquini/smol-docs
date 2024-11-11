@@ -278,6 +278,8 @@ public class RoomManager : MonoBehaviour
 
         this.entityManager.NukeCapsules();
 
+        GameObject.Destroy(this._deployedCavalo);
+
         // ph
         foreach (GameObject currentPile in GameObject.FindGameObjectsWithTag("EnemyPile")) { GameObject.Destroy(currentPile); }
 
