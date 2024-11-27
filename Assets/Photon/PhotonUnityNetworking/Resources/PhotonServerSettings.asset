@@ -44,6 +44,21 @@ MonoBehaviour:
   - DoctorSelected
   - OtherDoctorSelected
   - OtherPlayerSetReady
+  - EnemyKilled
+  - ReloadAmmo
+  - OtherPlayerBackToLobby
+  - OtherPlayerBackToLobbyCallback
+  - ResetDoctorSize
+  - AmmoReloadAnswer
+  - SendAmmoReloadRequest
+  - RequestMapSeed
+  - RequestMapSeedCallback
+  - DeployCavalo
+  - PickupCavalo
+  - EmptyCavaloResources
+  - FillCavaloResources
+  - DecreaseDoctorSize
+  - SendScoreUpdate
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

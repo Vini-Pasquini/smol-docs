@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Enemy
+  - EnemyPile
+  - Cavalo
+  - Capsule
+  - Wall
   layers:
   - Default
   - TransparentFX
@@ -15,6 +20,7 @@ TagManager:
   - 
   - 
   - 
+  - Player
   - 
   - 
   - 
@@ -34,10 +40,21 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
+  - Enemy
+  - EnemyRemains
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Map
+    uniqueID: 3111285709
+    locked: 0
+  - name: Popup
+    uniqueID: 3595299077
+    locked: 0
+  - name: Entity
+    uniqueID: 4287331069
+    locked: 0
+  - name: Bubble
+    uniqueID: 3778334101
     locked: 0
