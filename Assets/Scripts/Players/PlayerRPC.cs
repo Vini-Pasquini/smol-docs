@@ -127,6 +127,8 @@ public class PlayerRPC : MonoBehaviour // TODO: me livrar do mono (se der)
 
     public void RPCPickupCavalo()
     {
+        CavaloController cavalorController = roomManager.DeployedCavalo.GetComponent<CavaloController>();
+        roomManager.MyDoctor.AddCombatResources(cavalorController.MorphineAmountStored, cavalorController.VaccineAmountStored);
         roomManager.MyPhotonView.RPC(nameof(PickupCavalo), RpcTarget.All);
     }
 

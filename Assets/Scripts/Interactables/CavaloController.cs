@@ -5,8 +5,11 @@ using UnityEngine;
 
 public class CavaloController : Interactable
 {
-    private int vaccineAmountStored;
-    private int morphineAmountStored;
+    private int _vaccineAmountStored;
+    private int _morphineAmountStored;
+
+    public int VaccineAmountStored { get { return _vaccineAmountStored; } }
+    public int MorphineAmountStored { get { return _morphineAmountStored; } }
 
     private void Awake()
     {
@@ -33,21 +36,21 @@ public class CavaloController : Interactable
 
     protected override void CombatDoctorInteraction()
     {
-        // adicionar cap dps
-        roomManager.MyDoctor.AddCombatResources(this.morphineAmountStored, this.vaccineAmountStored);
+        // adicionar cap dps, talvez
+        roomManager.MyDoctor.AddCombatResources(this._morphineAmountStored, this._vaccineAmountStored);
         roomManager.MyPlayerRPC.RPCEmptyCavaloResources();
     }
 
     public void FillResources(int morphineAmount, int vaccineAmount)
     {
-        this.morphineAmountStored += morphineAmount;
-        this.vaccineAmountStored += vaccineAmount;
+        this._morphineAmountStored += morphineAmount;
+        this._vaccineAmountStored += vaccineAmount;
     }
 
     public void EmptyResources()
     {
-        this.morphineAmountStored = 0;
-        this.vaccineAmountStored = 0;
+        this._morphineAmountStored = 0;
+        this._vaccineAmountStored = 0;
     }
 
     private void OnTriggerEnter(Collider other)

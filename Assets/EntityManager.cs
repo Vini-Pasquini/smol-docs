@@ -6,6 +6,12 @@ public class EntityManager : MonoBehaviour
 {
     [SerializeField] private GameObject capsulePrefab;
 
+    [SerializeField] private Sprite capsuleMid;
+    [SerializeField] private Sprite capsuleEmpty;
+
+    public Sprite CapsuleMid { get { return capsuleMid; } }
+    public Sprite CapsuleEmpty { get { return capsuleEmpty; } }
+
     private RoomManager _roomManager;
     private EnemyManager _enemyManager;
 

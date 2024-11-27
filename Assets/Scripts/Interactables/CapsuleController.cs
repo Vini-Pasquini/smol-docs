@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class CapsuleController : Interactable
 {
+    private EntityManager _entityManager;
+    private SpriteRenderer _spriteRenderer;
     private TextMeshPro phAmountDisplay;
 
     private int serumAmount = 200;
@@ -17,8 +19,11 @@ public class CapsuleController : Interactable
 
     private void Start()
     {
+        this._spriteRenderer = this.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>();
+        this._entityManager = GameObject.Find("EntityManager").GetComponent<EntityManager>();
+
         this.transform.GetChild(0).rotation = Quaternion.Euler(new Vector3(0f, 0f, Random.Range(-15f, 15f)));
-        this.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = (int)(this.transform.position.y * -100f);
+        this._spriteRenderer.sortingOrder = (int)(this.transform.position.y * -100f);
     }
 
     private void Update()
@@ -32,6 +37,9 @@ public class CapsuleController : Interactable
         if (difference > this.serumAmount) difference = this.serumAmount;
         roomManager.MyDoctor.UpdateShrinkSerumAmount(difference);
         this.serumAmount -= difference;
+
+        if (this.serumAmount <= 0) { this._spriteRenderer.sprite = this._entityManager.CapsuleEmpty; }
+        else if (this.serumAmount <= 100) { this._spriteRenderer.sprite = this._entityManager.CapsuleMid; }
 
         phAmountDisplay.text = this.serumAmount.ToString();
     }

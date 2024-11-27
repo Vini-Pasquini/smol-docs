@@ -5424,6 +5424,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   capsulePrefab: {fileID: 7808818683588036021, guid: 76e9d050c492b7d4f93db83c9006bd8a, type: 3}
+  capsuleMid: {fileID: 21300000, guid: 6a6bf6949aa72dd49866bffe4b685620, type: 3}
+  capsuleEmpty: {fileID: 21300000, guid: fd060fcafe0249a498ca465d5dd7d225, type: 3}
 --- !u!4 &1122445906
 Transform:
   m_ObjectHideFlags: 0
@@ -9760,7 +9762,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2046424190
 RectTransform:
   m_ObjectHideFlags: 0

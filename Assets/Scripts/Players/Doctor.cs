@@ -80,6 +80,7 @@ public class Doctor : MonoBehaviour // TODO: me livrar do mono
         this.doctorAnimator = this.transform.GetChild(0).GetComponent<Animator>();
 
         this.audioSource = this.transform.GetChild(2).GetComponent<AudioSource>();
+        this.audioSource.Pause();
 
         this.individualScore = 0;
 
