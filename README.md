@@ -1,2 +1,2 @@
-# smol-docs
- multiplayer health game
+# Smol Docs
+projeto multiplayer saude - pucc
